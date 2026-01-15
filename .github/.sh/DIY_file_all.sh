@@ -1,7 +1,7 @@
 #!/bin/bash
 
 mkdir -p "$(pwd)/files/www/luci-static/resources/view/status/include" &&
-wget -q https://github.com/3wlh/Actions-Build_Package/releases/download/GitHub-Actions_status-ports/29_ports.js \
+wget -q https://github.com/3wlh/Actions-Build_Package/releases/download/GitHub-Actions_status-ports/ports.js \
 -O $(pwd)/files/www/luci-static/resources/view/status/include/29_ports.js
 
 [[ -d "$(pwd)/files/etc/uci-defaults" ]] || mkdir -p "$(pwd)/files/etc/uci-defaults"
