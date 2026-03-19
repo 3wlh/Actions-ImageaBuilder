@@ -28,10 +28,6 @@ echo "Download_Path: $(pwd)/packages/diy_packages"
 echo -e "untrusted comment: public key 29026b52f8ff825c\nRWQpAmtS+P+CXP4/60amOLDZs7jqKfTrFlKt5+UHYTU0ED9pRmh73vz7" >\
 "$(pwd)/keys/29026b52f8ff825c" && cp -f "$(pwd)/keys/29026b52f8ff825c" "$(pwd)/files/etc/opkg/keys/"
 sed -i '1a src/gz 3wlh https://packages.11121314.xyz/packages/aarch64_generic' "repositories.conf"
-#Segmentation "https://dl.openwrt.ai/releases/24.10/packages/aarch64_generic/kiddin9/" \
-#"luci-app-v2ray-server taskd luci-lib-xterm luci-lib-taskd luci-app-store"
-# Segmentation "https://op.dllkids.xyz/packages/aarch64_generic/" \
-# "luci-app-unishare unishare webdav2 luci-app-v2ray-server sunpanel luci-app-sunpanel"
 
 echo "=========================== 查看下载插件 ==========================="
 ls $(pwd)/packages/diy_packages
