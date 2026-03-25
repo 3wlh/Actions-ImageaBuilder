@@ -7,8 +7,8 @@ wget -q https://github.com/3wlh/Actions-ImageaBuilder/releases/download/GitHub-F
 [[ -d "$(pwd)/files/etc/uci-defaults" ]] || mkdir -p "$(pwd)/files/etc/uci-defaults"
 [[ -f "$(pwd)/files/99-custom.sh" ]] && \
 mv -f "$(pwd)/files/99-custom.sh" "$(pwd)/files/etc/uci-defaults"
-[[ -f "$(pwd)/all/sys-passwd.sh" ]] && \
-mv -f "$(pwd)/all/sys-passwd.sh" "$(pwd)/files/etc/uci-defaults"
+[[ -f "$(pwd)/all/sys-bash.sh" ]] && \
+mv -f "$(pwd)/all/sys-bash.sh" "$(pwd)/files/etc/uci-defaults"
 [[ -f "$(pwd)/all/sys-opkg.sh" ]] && \
 mv -f "$(pwd)/all/sys-opkg.sh" "$(pwd)/files/etc/uci-defaults"
 
