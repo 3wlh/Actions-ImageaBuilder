@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 export LANG=zh_CN.UTF-8
@@ -11,110 +11,126 @@ SHOW_IP_PATTERN="^[ewr].*|^br.*|^lt.*|^umts.*"
 DATA_STORAGE=/userdisk/data
 MEDIA_STORAGE=/userdisk/snail
 
-
 # don't edit below here
-function display()
+display()
 {
-	# $1=name $2=value $3=red_limit $4=minimal_show_limit $5=unit $6=after $7=acs/desc{
-	# battery red color is opposite, lower number
-	if [[ "$1" == "Battery" ]]; then
-		local great="<";
-	else
-		local great=">";
-	fi
-	if [[ -n "$2" && "$2" > "0" && (( "${2%.*}" -ge "$4" )) ]]; then
-		printf "%-14s%s" "$1:"
-		if awk "BEGIN{exit ! ($2 $great $3)}"; then
-			echo -ne "\e[0;91m $2";
-		else
-			echo -ne "\e[0;92m $2";
-		fi
-		printf "%-1s%s\x1B[0m" "$5"
-		printf "%-11s%s\t" "$6"
-		return 1
-	fi
-} # display
+    # $1=name $2=value $3=red_limit $4=minimal_show_limit $5=unit $6=after
+    if [ "$1" = "Battery" ]; then
+        great="<"
+    else
+        great=">"
+    fi
+    if [ -n "$2" ] && [ "$2" -gt 0 ] 2>/dev/null && [ "${2%.*}" -ge "$4" ] 2>/dev/null; then
+        printf "%-14s%s" "$1:"
+        if awk "BEGIN{exit ! ($2 $great $3)}" 2>/dev/null; then
+            printf "\033[0;91m %s" "$2"
+        else
+            printf "\033[0;92m %s" "$2"
+        fi
+        printf "%-1s%s\033[0m" "$5"
+        printf "%-11s%s\t" "$6"
+        return 0
+    fi
+    return 1
+}
 
-
-function get_ip_addresses()
+get_ip_addresses()
 {
-	local ips=()
-	for f in /sys/class/net/*; do
-		local intf=$(basename $f)
-		# match only interface names starting with e (Ethernet), br (bridge), w (wireless), r (some Ralink drivers use ra<number> format)
-		if [[ $intf =~ $SHOW_IP_PATTERN ]]; then
-			local tmp=$(ip -4 addr show dev $intf | awk '/inet/ {print $2}' | cut -d'/' -f1)
-			# add both name and IP - can be informative but becomes ugly with long persistent/predictable device names
-			#[[ -n $tmp ]] && ips+=("$intf: $tmp")
-			# add IP only
-			[[ -n $tmp ]] && ips+=("$tmp")
-		fi
-	done
-	echo "${ips[@]}"
-} # get_ip_addresses
+    ip_list=""
+    for f in /sys/class/net/*; do
+        intf=$(basename "$f")
+        case $intf in
+            [ewr]*|br*|lt*|umts*)
+                tmp=$(ip -4 addr show dev "$intf" 2>/dev/null | awk '/inet/ {print $2}' | cut -d'/' -f1)
+                if [ -n "$tmp" ]; then
+                    ip_list="$ip_list $tmp"
+                fi
+                ;;
+        esac
+    done
+    echo "${ip_list# }"
+}
 
-
-function storage_info()
+storage_info()
 {
-	# storage info
-	RootInfo=$(df -h /)
-	root_usage=$(awk '/\// {print $(NF-1)}' <<<${RootInfo} | sed 's/%//g')
-	root_total=$(awk '/\// {print $(NF-4)}' <<<${RootInfo})
-} # storage_info
+    RootInfo=$(df -h / 2>/dev/null)
+    if [ -n "$RootInfo" ]; then
+        root_usage=$(echo "$RootInfo" | awk '/\// {print $(NF-1)}' | sed 's/%//g')
+        root_total=$(echo "$RootInfo" | awk '/\// {print $(NF-4)}')
+    else
+        root_usage="0"
+        root_total="0"
+    fi
+}
 
-
-# query various systems and send some stuff to the background for overall faster execution.
-# Works only with ambienttemp and batteryinfo since A20 is slow enough :)
 storage_info
-critical_load=$(( 1 + $(grep -c processor /proc/cpuinfo) / 2 ))
+critical_load=$(( 1 + $(grep -c processor /proc/cpuinfo 2>/dev/null) / 2 ))
 
-# get uptime, logged in users and load in one take
-UptimeString=$(uptime | tr -d ',')
-time=$(awk -F" " '{print $3" "$4}' <<<"${UptimeString}")
-load="$(awk -F"average: " '{print $2}'<<<"${UptimeString}")"
-case ${time} in
-	1:*) # 1-2 hours
-		time=$(awk -F" " '{print $3" 小时"}' <<<"${UptimeString}")
-		;;
-	*:*) # 2-24 hours
-		time=$(awk -F" " '{print $3" 小时"}' <<<"${UptimeString}")
-		;;
-	*day) # days
-		days=$(awk -F" " '{print $3"天"}' <<<"${UptimeString}")
-		time=$(awk -F" " '{print $5}' <<<"${UptimeString}")
-		time="$days "$(awk -F":" '{print $1"小时 "$2"分钟"}' <<<"${time}")
-		;;
+UptimeString=$(uptime 2>/dev/null | tr -d ',')
+time=$(echo "$UptimeString" | awk -F" " '{print $3" "$4}')
+load=$(echo "$UptimeString" | awk -F"average: " '{print $2}')
+case $time in
+    1:*)
+        time=$(echo "$UptimeString" | awk -F" " '{print $3" 小时"}')
+        ;;
+    *:*)
+        time=$(echo "$UptimeString" | awk -F" " '{print $3" 小时"}')
+        ;;
+    *day)
+        days=$(echo "$UptimeString" | awk -F" " '{print $3"天"}')
+        time=$(echo "$UptimeString" | awk -F" " '{print $5}')
+        time="$days $(echo "$time" | awk -F":" '{print $1"小时 "$2"分钟"}')"
+        ;;
 esac
 
-
-# memory and swap
 mem_info=$(LC_ALL=C free -w 2>/dev/null | grep "^Mem" || LC_ALL=C free | grep "^Mem")
-memory_usage=$(awk '{printf("%.0f",(($2-($4+$6))/$2) * 100)}' <<<${mem_info})
-memory_total=$(awk '{printf("%d",$2/1024)}' <<<${mem_info})
-swap_info=$(LC_ALL=C free -m | grep "^Swap")
-swap_usage=$( (awk '/Swap/ { printf("%3.0f", $3/$2*100) }' <<<${swap_info} 2>/dev/null || echo 0) | tr -c -d '[:digit:]')
-swap_total=$(awk '{print $(2)}' <<<${swap_info})
+if [ -n "$mem_info" ]; then
+    memory_usage=$(echo "$mem_info" | awk '{printf("%.0f",(($2-($4+$6))/$2) * 100)}')
+    memory_total=$(echo "$mem_info" | awk '{printf("%d",$2/1024)}')
+else
+    memory_usage="0"
+    memory_total="0"
+fi
+
+swap_info=$(LC_ALL=C free -m 2>/dev/null | grep "^Swap")
+if [ -n "$swap_info" ]; then
+    swap_usage=$(echo "$swap_info" | awk '{printf("%3.0f", $3/$2*100)}' 2>/dev/null | tr -c -d '[:digit:]')
+    swap_total=$(echo "$swap_info" | awk '{print $(2)}')
+else
+    swap_usage="0"
+    swap_total="0"
+fi
 
 c=0
-while [ ! -n "$(get_ip_addresses)" ];do
-[ $c -eq 3 ] && break || let c++
-sleep 1
+while [ -z "$(get_ip_addresses)" ]; do
+    [ $c -eq 3 ] && break || c=$((c+1))
+    sleep 1
 done
 ip_address="$(get_ip_addresses)"
 
-# display info
-display "系统负载" "${load%% *}" "${critical_load}" "0" "" "${load#* }"
-printf "运行时间:  \x1B[92m%s\x1B[0m\t\t" "$time"
-echo "" # fixed newline
+load_1min=$(echo "$load" | awk '{print $1}')
+load_rest=$(echo "$load" | awk '{$1=""; print $0}' | sed 's/^[ \t]*//')
 
+if [ -n "$load_1min" ] && [ "$(echo "$load_1min > 0" | bc 2>/dev/null)" = "1" ]; then
+    printf "%-14s" "系统负载:"
+    if [ "$(echo "$load_1min > $critical_load" | bc 2>/dev/null)" = "1" ]; then
+        printf "\033[0;91m %s\033[0m" "$load_1min"
+    else
+        printf "\033[0;92m %s\033[0m" "$load_1min"
+    fi
+    printf " %s\t" "$load_rest"
+else
+    printf "%-14s\033[0;92m %s\033[0m %s\t" "系统负载:" "$load_1min" "$load_rest"
+fi
+printf "运行时间:  \033[92m%s\033[0m\t" "$time"
+echo ""
 
 display "内存已用" "$memory_usage" "70" "0" " %" " of ${memory_total}MB"
-display "交换内存" "$swap_usage" "10" "0" " %" " of $swap_total""Mb"
-printf "IP  地址:  \x1B[92m%s\x1B[0m" "$ip_address"
-echo "" # fixed newline
+printf "IP  地址:  \033[92m%s\033[0m" "$ip_address"
+echo ""
 
 display "系统存储" "$root_usage" "90" "1" "%" " of $root_total"
 if [ -x /sbin/cpuinfo ]; then
-printf "CPU 信息: \x1B[92m%s\x1B[0m\t" "$(echo `/sbin/cpuinfo | cut -d ' ' -f -4`)"
+    printf "CPU 信息: \033[92m%s\033[0m\t" "$( /sbin/cpuinfo 2>/dev/null | cut -d ' ' -f -4 )"
 fi
-echo -e "\n"
+echo ""
