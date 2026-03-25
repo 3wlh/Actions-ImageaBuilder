@@ -81,6 +81,8 @@ uci commit dhcp
 
 #==========================Firewall==========================
 # 默认设置WAN口防火墙打开
+uci set firewall.@defaults[0].fullcone='1'
+uci set firewall.@defaults[0].fullcone6='1'
 uci set firewall.@zone[1].input='ACCEPT'
 uci commit firewall
 
