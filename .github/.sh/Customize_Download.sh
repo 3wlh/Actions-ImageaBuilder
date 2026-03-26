@@ -5,6 +5,7 @@ echo "R6S"
 function OECT() {
 [[ -d $(pwd)/files/www/cgi-bin ]] || mkdir -p "$(pwd)/files/www/cgi-bin"
 # 下载文件
+echo "OECT"
 sub_cgi="https://github.com/3wlh/Actions-Build_Source/releases/download/sub.cgi/sub.cgi-aarch64_generic"
 curl -# -L --fail "${sub_cgi}" -o "$(pwd)/files/www/cgi-bin/sub.cgi" && chmod 755 "$(pwd)/files/www/cgi-bin/sub.cgi"
 page_cgi="https://github.com/3wlh/Actions-Build_Source/releases/download/page.cgi/page.cgi-aarch64_generic"
