@@ -169,12 +169,28 @@ jobs:
             ${{ inputs.branch }}/imagebuilder:${{ env.IMAGE }}
           fi
           chmod -R 777 "${{ env.PATH_CACHE }}"
+      
+      - name: Generate Env File
+        run: |
+          # 动态生成 .env 文件
+          cat > .env << EOF
+          PROFILES=${{ env.profile }}
+          BRANCH=${{ inputs.branch }}
+          VERSION=${{ inputs.version }}
+          INCLUDE_DOCKER=${{ inputs.docker }}
+          NETWORK_LAN=${{ inputs.network_lan }}
+          ENABLE_PPPOE=${{ inputs.enable_pppoe }}
+          PPPOE_ACCOUNT=${{ inputs.pppoe_account }}
+          PPPOE_PASSWORD=${{ inputs.pppoe_password }}
+          ROOTFS_PARTSIZE=${{ inputs.rootfs_partsize }}
+          EOF
         
       - name: Building ${{ inputs.branch }} ${{ env.device }}
         id: building
         run: |
           docker run --rm -i \
             --user root \
+            --env-file .env \
             -v "${{ env.PATH_CACHE }}/dl:${{ env.builder }}/dl" \
             -v "${{ env.PATH_CACHE }}/packages:${{ env.builder }}/packages" \
             -v "${{ github.workspace }}/.github/.sh:${{ env.builder }}/SH" \
@@ -183,15 +199,6 @@ jobs:
             -v "${{ github.workspace }}/diy_make/${{ env.arch }}/make.sh:${{ env.builder }}/make.sh" \
             -v "${{ github.workspace }}/diy_files/all:${{ env.builder }}/all" \
             -v "${{ github.workspace }}/diy_files/${{ env.arch }}/${{ env.profile }}:${{ env.builder }}/files" \
-            -e PROFILES=${{ env.profile }} \
-            -e BRANCH=${{ inputs.branch }} \
-            -e VERSION=${{ inputs.version }} \
-            -e INCLUDE_DOCKER=${{ inputs.docker }} \
-            -e NETWORK_LAN=${{ inputs.network_lan }} \
-            -e ENABLE_PPPOE=${{ inputs.enable_pppoe }} \
-            -e PPPOE_ACCOUNT=${{ inputs.pppoe_account }} \
-            -e PPPOE_PASSWORD=${{ inputs.pppoe_password }} \
-            -e ROOTFS_PARTSIZE=${{ inputs.rootfs_partsize }} \
             ${{ inputs.branch }}/imagebuilder:${{ env.IMAGE }} /bin/bash ${{ env.builder }}/make.sh
           cat "${{ github.workspace }}/${{ inputs.image }}/bin/.bashrc" 2>/dev/null >> $GITHUB_OUTPUT
           #cat "${{ github.workspace }}/${{ inputs.image }}/bin/.bashrc" 2>/dev/null >> $GITHUB_ENV
@@ -244,8 +251,8 @@ jobs:
         with:
           tag_name: GitHub-Actions_${{ inputs.image }}-${{ env.profile }}
           delete_release: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}  
-          
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      
       - name: Upload ${{ inputs.branch }} as release assets
         if: steps.images.outputs.status == 'success'
         uses: ncipollo/release-action@main
