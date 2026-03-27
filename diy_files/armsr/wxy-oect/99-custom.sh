@@ -16,7 +16,7 @@ fi
 if [ -n "${settings_lan}" ]; then
 uci set network.lan.ipaddr="${settings_lan}"
 fi
-#========Network========
+#==========================Network==========================
 # 旁路设置
 # uci set network.lan.proto='static'
 # uci set network.lan.ipaddr="10.10.10.250"
@@ -25,8 +25,10 @@ uci set network.lan.gateway="10.10.10.254"
 uci add_list network.lan.dns="10.10.10.254"
 uci add_list network.lan.dns="8.8.8.8"
 uci add_list network.lan.dns="114.114.114.114"
+uci add_list network.lan.dns="233.5.5.5"
 # 删除 WAN 口
 uci -q delete network.wan
+uci -q delete network.wan6
 uci commit network
 
 #==========================Dropbear==========================
@@ -65,45 +67,11 @@ uci set argon.@global[0].blur_dark="1"
 uci set argon.@global[0].transparency="0.2"
 uci set argon.@global[0].transparency_dark="0.2"
 uci commit argon
-
 #==========================DHCP==========================
-if [[ "${settings_service}" == "true" ]]; then
-#========Firewall========
-# 默认设置WAN口防火墙打开
-uci set firewall.@defaults[0].input='ACCEPT'
-uci set firewall.@defaults[0].output='ACCEPT'
-uci set firewall.@defaults[0].forward='ACCEPT'
-uci set firewall.@zone[1].input='ACCEPT'
-uci set firewall.docker1.input='ACCEPT'
-uci set firewall.docker.output='ACCEPT'
-uci set firewall.docker.forward='ACCEPT'
-uci commit firewall
-
-#========DHCP========
 # 不提供DHCP服务
 uci delete dhcp.lan.force
-uci set dhcp.lan.ignore="1"
 uci set dhcp.lan.dynamicdhcp="0"
-# 禁用 ipv6 DHCP
-# DHCPv6 服务
-uci -q delete dhcp.lan.dhcpv6
-# RA 服务
-uci -q delete dhcp.lan.ra
-# NDP 代理
-uci -q delete dhcp.lan.ndp
-# 禁用 ipv6 解析
-# uci set dhcp.@dnsmasq[0].filter_aaaa="1"
-uci commit dhcp
-
-#========System========
-if [ -n "${settings_model}" ]; then
-uci set system.@system[0].hostname="${settings_model}"
-fi
-uci commit system
-else
-#==========================DHCP==========================
-# 强制此接口DHCP
-uci set dhcp.lan.force='1'
+uci set dhcp.lan.ignore="1"
 # 删除 DNS重定向
 uci -q delete dhcp.@dnsmasq[0].dns_redirect
 # 禁用 ipv6 DHCP
@@ -118,20 +86,24 @@ uci -q delete dhcp.lan.ndp
 uci commit dhcp
 #==========================Firewall==========================
 # 默认设置WAN口防火墙打开
+uci set firewall.@defaults[0].fullcone='1'
+uci set firewall.@defaults[0].fullcone6='1'
+uci set firewall.@defaults[0].input='ACCEPT'
+uci set firewall.@defaults[0].output='ACCEPT'
+uci set firewall.@defaults[0].forward='ACCEPT'
 uci set firewall.@zone[1].input='ACCEPT'
+uci set firewall.docker.input='ACCEPT'
+uci set firewall.docker.output='ACCEPT'
+uci set firewall.docker.forward='ACCEPT'
 uci commit firewall
 
-#==========================Network==========================
-# 删除 WAN6 口
-uci -q delete network.wan6
-uci commit network
 #==========================System==========================
 # 更改名称
 if [ -n "${settings_model}" ]; then
 uci set system.@system[0].hostname="${settings_model}"
-fi
 uci commit system
 fi
+#==========================在线配置==========================
 uci set scriptrun.@general[].script_url="http://3wlh.github.io/Script/OpenWrt/Config_sh/OECT.sh"
 uci commit scriptrun
 # 设置编译作者信息
