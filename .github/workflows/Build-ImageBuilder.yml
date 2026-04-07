@@ -104,7 +104,7 @@ on:
         type: choice
         options:
           - name: nanopi-r6s
-            value: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/nanopi-r6s.env"
+            - value: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/nanopi-r6s.env"
           - name: orangepi-5plus
             value: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/orangepi-5plus.env"
       diy_script:
