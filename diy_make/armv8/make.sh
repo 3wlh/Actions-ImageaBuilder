@@ -35,7 +35,7 @@ ls $(pwd)/packages/diy_packages
 echo "============================= 检查缓存 ============================="
 if [[ $(find "$(pwd)/dl" -type f 2>/dev/null | wc -l) -gt 0 ]]; then
     echo "$(date '+%Y-%m-%d %H:%M:%S') - 正在检查缓存插件："
-    Plugin_Check
+    Packages_Check
 else
     echo "$(date '+%Y-%m-%d %H:%M:%S') - 没有缓存插件."
 fi
