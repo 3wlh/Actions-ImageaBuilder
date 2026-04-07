@@ -1,8 +1,8 @@
 #!/bin/sh
 # 固件首次启动时运行的脚本 /etc/uci-defaults/99-custom.sh
 # 输出日志文件
-LOGFILE="/tmp/uci-defaults-log.txt"
-echo "Starting 99-custom.sh at $(date '+%Y-%m-%d %H:%M:%S')" >> $LOGFILE
+LOGFILE="/tmp/defaults.log"
+echo "Starting defaults at $(date '+%Y-%m-%d %H:%M:%S')" >> $LOGFILE
 
 #==========================ARGON==========================
 if [ ! -n "$(uci -q get argon.@global[])" ]; then
@@ -19,7 +19,6 @@ uci set argon.@global[0].blur="1"
 uci set argon.@global[0].blur_dark="1"
 uci set argon.@global[0].transparency="0.2"
 uci set argon.@global[0].transparency_dark="0.2"
-uci commit argon
 
 #==========================DHCP==========================
 # 强制此接口DHCP
@@ -35,11 +34,12 @@ uci -q delete dhcp.lan.ra
 uci -q delete dhcp.lan.ndp
 # 禁用 ipv6 解析
 # uci set dhcp.@dnsmasq[0].filter_aaaa="1"
-uci commit dhcp
 
 #==========================Firewall==========================
 # 默认设置WAN口防火墙打开
 uci set firewall.@zone[1].input='ACCEPT'
-uci commit firewall
 
+
+uci set scriptrun.@general[0].script_url="http://3wlh.github.io/Script/OpenWrt/Config_sh/R6S.sh"
+uci commit
 exit 0
