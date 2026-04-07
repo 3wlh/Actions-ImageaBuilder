@@ -1,6 +1,7 @@
 #!/bin/bash
 echo "============================= 初始化 ============================="
 Script_url="https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/.github/script"
+wget -q ${Script_url}/Replace.sh -O "/bin/Replace" && chmod 755 "/bin/Replace"
 wget -q ${Script_url}/Packages_Default.sh -O "$(pwd)/def_pkg.env" && source "$(pwd)/def_pkg.env"
 echo ${DIY_PACKAGE}
 [[ -n "${DIY_PACKAGE}" ]] && wget -q ${DIY_PACKAGE} -O "$(pwd)/diy_pkg.env" && source $(pwd)/diy_pkg.env
