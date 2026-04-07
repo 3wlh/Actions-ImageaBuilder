@@ -115,7 +115,7 @@ jobs:
     uses: ./.github/workflows/Call_ImageBuilder.yml
     secrets: inherit
     with:
-      description: ${{ inputs.description }}
+      branch: ${{ inputs.branch }}
       image: ${{ inputs.image }}
       version: ${{ inputs.version }}
       profile: ${{ inputs.profile }}
