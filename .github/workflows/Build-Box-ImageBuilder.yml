@@ -251,7 +251,29 @@ on:
           - "192.168.100.1"
           - "10.10.10.250"
           - "10.10.10.5"
-          
+      
+      diy_package:
+        description: |
+          设置Diy插件网址
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/nanopi-r6s.env"
+          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/orangepi-5plus.env"
+          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/x86-64.env"
+
+      diy_script:
+        description: |
+          设置Diy初始化脚本网址
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_files/nanopi-r6s.sh"
+          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/orangepi-5plus.sh"
+          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/x86-64.sh"
+         
       docker:
         description: |
           是否编译 Docker 插件

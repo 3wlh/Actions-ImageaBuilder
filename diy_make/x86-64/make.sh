@@ -13,7 +13,6 @@ export Model="${Model}"
 wget -qO- ${Script_url}/Diy_file_all.sh | bash
 echo ${DIY_SCRIPT}
 [[ -n "${DIY_SCRIPT}" ]] && wget -q ${DIY_SCRIPT} -O "$(pwd)/files/etc/uci-defaults/99-defaults1.sh"
-
 echo "==============================下载插件=============================="
 [[ -d "$(pwd)/packages/diy_packages" ]] || mkdir -p "$(pwd)/packages/diy_packages"
 echo "Download_Path: $(pwd)/packages/diy_packages"

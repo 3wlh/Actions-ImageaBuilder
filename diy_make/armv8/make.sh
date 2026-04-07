@@ -1,26 +1,18 @@
 #!/bin/bash
-#====== 函数 ======#
-function Script(){
-for file in ${1} ;do
-if [[ -f ${file} ]];then
-	name=$(basename ${file} .sh)
-	ln -s ${file} /bin/${name}
-	echo "$(date '+%Y-%m-%d %H:%M:%S') - ${name} 创建OK."
-fi
-done
-}
-echo "============================= 创建脚本 ============================="
-chmod -R 755 "$(pwd)/SH"
-Script "$(pwd)/SH/*"
-source $(pwd)/DIY_ENV/default_packages.sh
-source $(pwd)/DIY_ENV/${PROFILES}.env
+echo "============================= 初始化 ============================="
+Script_url="https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/.github/script"
+wget -q ${Script_url}/Replace.sh -O "/bin/Replace" && chmod 755 "/bin/Replace"
+wget -q ${Script_url}/Packages_Default.sh -O "$(pwd)/def_pkg.env" && source "$(pwd)/def_pkg.env"
+echo ${DIY_PACKAGE}
+[[ -n "${DIY_PACKAGE}" ]] && wget -q ${DIY_PACKAGE} -O "$(pwd)/diy_pkg.env" && source $(pwd)/diy_pkg.env
 find . -maxdepth 1 -type f -name "repositories.conf" -exec cp {} "$(pwd)/packages/" \;
-#========== 添加首次启动时运行的脚本 ==========#
 echo "============================= DIY配置 ============================="
+[[ -z "${PROFILE}" ]] && { echo "获取编译设备配置失败！";exit 1; }
 export Model="${Model}"
 [[ -d "$(pwd)/files/etc/opkg/keys" ]] || mkdir -p "$(pwd)/files/etc/opkg/keys"
-DIY_file_all
-Customize_Download
+wget -qO- ${Script_url}/Diy_file_all.sh | bash
+echo ${DIY_SCRIPT}
+[[ -n "${DIY_SCRIPT}" ]] && wget -q ${DIY_SCRIPT} -O "$(pwd)/files/etc/uci-defaults/99-defaults1.sh"
 echo "============================= 下载插件 ============================="
 [[ -d "$(pwd)/packages/diy_packages" ]] || mkdir -p "$(pwd)/packages/diy_packages"
 echo "Download_Path: $(pwd)/packages/diy_packages"
@@ -35,7 +27,7 @@ ls $(pwd)/packages/diy_packages
 echo "============================= 检查缓存 ============================="
 if [[ $(find "$(pwd)/dl" -type f 2>/dev/null | wc -l) -gt 0 ]]; then
     echo "$(date '+%Y-%m-%d %H:%M:%S') - 正在检查缓存插件："
-    Packages_Check
+    wget -qO- ${Script_url}/Packages_Check.sh | bash
 else
     echo "$(date '+%Y-%m-%d %H:%M:%S') - 没有缓存插件."
 fi
@@ -110,7 +102,7 @@ Replace "CONFIG_TARGET_EXT4_JOURNAL"
 cp -f "$(pwd)/.config" "$(pwd)/bin/buildinfo.config"
 #========== kmods版本 ==========#
 echo "========== kmods版本 =========="
-Kmods
+wget -qO- ${Script_url}/Kmods.sh | bash
 echo "============================= 打包镜像 ============================="
 cp -f "$(pwd)/repositories.conf" "$(pwd)/bin/repositories.conf"
 make image PROFILE=$PROFILE PACKAGES="$PACKAGES" FILES="$(pwd)/files" ROOTFS_PARTSIZE=$ROOTFS_PARTSIZE
