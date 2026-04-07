@@ -1,21 +1,9 @@
 #!/bin/sh
 # 固件首次启动时运行的脚本 /etc/uci-defaults/99-custom.sh
 # 输出日志文件
-[[ -L "/etc/ophub-release" ]] && rm -f "/etc/profile.d/sys-sysinfo.sh"
-LOGFILE="/tmp/uci-defaults-log.txt"
-echo "Starting 99-custom.sh at $(date '+%Y-%m-%d %H:%M:%S')" >> $LOGFILE
+LOGFILE="/tmp/defaults.log"
+echo "Starting defaults at $(date '+%Y-%m-%d %H:%M:%S')" >> $LOGFILE
 
-# 检查配置文件diy-settings是否存在
-SETTINGS_FILE="/etc/config/diy-settings"
-if [ -f "$SETTINGS_FILE" ]; then
-   # 读取diy-settings信息
-   source "$SETTINGS_FILE"
-fi
-
-#====================设置LAN口IP====================
-if [ -n "${settings_lan}" ]; then
-uci set network.lan.ipaddr="${settings_lan}"
-fi
 #==========================Network==========================
 # 旁路设置
 # uci set network.lan.proto='static'
@@ -46,10 +34,6 @@ uci set fstab.@global[0].auto_swap="0"
 # 自动挂载磁盘
 uci set fstab.@global[0].auto_mount="1"
 uci commit fstab
-
-#==========================TTYD==========================
-[[ -f "/etc/config/ttyd" ]] && uci delete ttyd.@ttyd[0].interface
-uci commit ttyd
 
 #==========================ARGON==========================
 if [ ! -n "$(uci -q get argon.@global[])" ]; then
@@ -95,21 +79,7 @@ uci set firewall.@zone[1].input='ACCEPT'
 uci set firewall.docker.input='ACCEPT'
 uci set firewall.docker.output='ACCEPT'
 uci set firewall.docker.forward='ACCEPT'
-uci commit firewall
-
-#==========================System==========================
-# 更改名称
-if [ -n "${settings_model}" ]; then
-uci set system.@system[0].hostname="${settings_model}"
-uci commit system
-fi
 #==========================在线配置==========================
 uci set scriptrun.@general[].script_url="http://3wlh.github.io/Script/OpenWrt/Config_sh/OECT.sh"
-uci commit scriptrun
-# 设置编译作者信息
-FILE_PATH="/etc/openwrt_release"
-NEW_DESCRIPTION="Compiled by 3wlh"
-sed -i "s/DISTRIB_DESCRIPTION='[^']*'/DISTRIB_DESCRIPTION='$NEW_DESCRIPTION'/" "$FILE_PATH"
-# 删除配置文件
-rm -f "${SETTINGS_FILE}"
+uci commit
 exit 0

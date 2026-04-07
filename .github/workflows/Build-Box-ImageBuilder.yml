@@ -259,9 +259,8 @@ on:
         default: 'all'
         type: choice
         options:
-          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/nanopi-r6s.env"
           - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/orangepi-5plus.env"
-          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/x86-64.env"
+          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/wxy-oect.env"
 
       diy_script:
         description: |
@@ -270,9 +269,8 @@ on:
         default: 'all'
         type: choice
         options:
-          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_files/nanopi-r6s.sh"
+          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_files/wxy-oect.sh"
           - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/orangepi-5plus.sh"
-          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/x86-64.sh"
          
       docker:
         description: |
