@@ -53,6 +53,7 @@ jobs:
           else
             echo "builder=/home/build/immortalwrt" >> $GITHUB_ENV
           fi
+          echo "image=${image}" >> $GITHUB_ENV
           echo "IMAGE=${IMAGE}" >> $GITHUB_ENV
           echo "CACHE_IMAGE=imagebuilder:${image}-${{ inputs.version }}.tar" >> $GITHUB_ENV
           echo "CACHE_KEY=${{ inputs.branch }}-${IMAGE}-$(echo "${IMAGE}" | md5sum | awk '{print $1}')" >> $GITHUB_ENV
@@ -186,7 +187,7 @@ jobs:
         if: steps.images.outputs.status == 'success'
         uses: dev-drprasad/delete-tag-and-release@v1.1
         with:
-          tag_name: GitHub-Actions_${{ inputs.image }}-${{ env.profile }}
+          tag_name: GitHub-Actions_${{ env.image }}-${{ env.profile }}
           delete_release: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
       
@@ -194,7 +195,7 @@ jobs:
         if: steps.images.outputs.status == 'success'
         uses: ncipollo/release-action@main
         with:
-          tag: GitHub-Actions_${{ inputs.image }}-${{ env.profile }}
+          tag: GitHub-Actions_${{ env.image }}-${{ env.profile }}
           name: ${{ inputs.branch }}_${{ env.profile }}
           artifacts: ${{ github.workspace }}/output/*
           allowUpdates: true
