@@ -104,18 +104,12 @@ on:
         type: choice
         options:
           - name: nanopi-r6s
-            - value: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/nanopi-r6s.env"
+            package: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/nanopi-r6s.env"
+            script: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_files/nanopi-r6s.sh"
           - name: orangepi-5plus
-            value: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/orangepi-5plus.env"
-      diy_script:
-        description: |
-          设置Diy脚本网址
-        required: true
-        default: 'all'
-        type: choice
-        options:
-          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_files/nanopi-r6s.sh"
-          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_files/nanopi-r6s.sh"
+            package: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/orangepi-5plus.env"
+            script: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/orangepi-5plus.sh"
+    
 jobs:
   Call_ImageBuilder:
     uses: ./.github/workflows/Call_ImageBuilder.yml
