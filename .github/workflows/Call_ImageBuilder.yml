@@ -28,7 +28,6 @@ on:
 env:
   UPLOAD_BIN_DIR: false
   PATH_CACHE: /tmp/.cache
-  CACHE_IMAGE: imagebuilder:${{ inputs.image }}-${{ inputs.version }}.tar
   
 
 jobs:
@@ -53,6 +52,7 @@ jobs:
             echo "builder=/home/build/immortalwrt" >> $GITHUB_ENV
           fi
           echo "IMAGE=${IMAGE}" >> $GITHUB_ENV
+          echo "CACHE_IMAGE=imagebuilder:${image}-${{ inputs.version }}.tar" >> $GITHUB_ENV
           echo "CACHE_KEY=${{ inputs.branch }}-${IMAGE}-$(echo "${IMAGE}" | md5sum | awk '{print $1}')" >> $GITHUB_ENV
           
       - name: Enable Cache
