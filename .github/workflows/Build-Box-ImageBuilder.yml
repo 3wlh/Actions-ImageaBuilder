@@ -259,9 +259,9 @@ on:
         default: 'all'
         type: choice
         options:
-          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/orangepi-5plus.env"
           - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/wxy-oect.env"
-
+          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/orangepi-5plus.env"
+          
       diy_script:
         description: |
           设置Diy初始化脚本网址
