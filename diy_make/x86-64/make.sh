@@ -20,7 +20,7 @@ echo "Download_Path: $(pwd)/packages/diy_packages"
 # 添加签名
 echo -e "untrusted comment: public key 29026b52f8ff825c\nRWQpAmtS+P+CXP4/60amOLDZs7jqKfTrFlKt5+UHYTU0ED9pRmh73vz7" >\
 "$(pwd)/keys/29026b52f8ff825c" && cp -f "$(pwd)/keys/29026b52f8ff825c" "$(pwd)/files/etc/opkg/keys/"
-sed -i '1a src/gz 3wlh https://packages.11121314.xyz/packages/aarch64_generic' "repositories.conf"
+sed -i '1a src/gz 3wlh https://packages.11121314.xyz/packages/x86_64' "repositories.conf"
 
 echo "=========================== 查看下载插件 ==========================="
 ls $(pwd)/packages/diy_packages
