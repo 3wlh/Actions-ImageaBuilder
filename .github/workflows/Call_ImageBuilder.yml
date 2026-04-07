@@ -196,7 +196,7 @@ jobs:
         uses: ncipollo/release-action@main
         with:
           tag: GitHub-Actions_${{ env.image }}-${{ env.profile }}
-          name: ${{ inputs.branch }}_${{ env.profile }}
+          name: ${{ inputs.branch }}_${{ env.arch }}-${{ env.profile }}
           artifacts: ${{ github.workspace }}/output/*
           allowUpdates: true
           removeArtifacts: false
