@@ -6,6 +6,7 @@ echo ${DIY_PACKAGE}
 [[ -n "${DIY_PACKAGE}" ]] && wget -q ${DIY_PACKAGE} -O "$(pwd)/diy_pkg.env" && source $(pwd)/diy_pkg.env
 find . -maxdepth 1 -type f -name "repositories.conf" -exec cp {} "$(pwd)/packages/" \;
 echo "============================= DIY配置 ============================="
+[[ -z "${PROFILE}" ]] && { echo "获取编译设备配置失败！";exit 1; }
 export Model="${Model}"
 [[ -d "$(pwd)/files/etc/opkg/keys" ]] || mkdir -p "$(pwd)/files/etc/opkg/keys"
 wget -qO- ${Script_url}/Diy_file_all.sh | bash

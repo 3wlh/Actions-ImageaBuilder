@@ -20,8 +20,9 @@ on:
         default: "rockchip-armv8"
         type: choice
         options:
-          - x86-64
-          - rockchip-armv8
+          - x86-64:generic
+          - rockchip-armv8:nanopi-r6s
+          - rockchip-armv8:orangepi-5plus
           
       version:
         description: |

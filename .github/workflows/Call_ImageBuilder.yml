@@ -5,11 +5,9 @@ on:
     inputs:
       branch:
         type: string
-      image:
+      device:
         type: string
       version:
-        type: string
-      profile:
         type: string
       rootfs_partsize:
         type: string
@@ -43,10 +41,11 @@ jobs:
         
       - name: Configure docker image
         run: |
+          image="${{ inputs.device%:* }}"
           if [[ "${{ inputs.version }}" =~ "SNAPSHOT" || "${{ inputs.branch }}" == "openwrt" ]]; then
-            IMAGE=${{ inputs.image }}-${{ inputs.version }}
+            IMAGE=${image}-${{ inputs.version }}
           else
-            IMAGE=${{ inputs.image }}-openwrt-${{ inputs.version }}
+            IMAGE=${image}-openwrt-${{ inputs.version }}
           fi
           if [[ "${{ inputs.branch }}" == "openwrt" ]]; then
             echo "builder=/builder" >> $GITHUB_ENV
@@ -66,10 +65,10 @@ jobs:
         run: |
           sudo timedatectl set-timezone "Asia/Shanghai"
           echo "time=$(date "+%Y.%m.%d-%H%M%S")" >> $GITHUB_ENV
-          echo "profile=${{ inputs.profile }}" >> $GITHUB_ENV
-          [[ "${{ inputs.image }}" =~ "armv8"  ]] && echo "arch=armv8" >> $GITHUB_ENV
-          [[ "${{ inputs.image }}" =~ "x86-64"  ]] && echo "arch=x86-64" >> $GITHUB_ENV
-          echo "device=$(echo ${{ inputs.image }} | sed 's/-openwrt//' | sed 's/-armv8//')" >> $GITHUB_ENV
+          echo "profile=${{ inputs.device#*: }}" >> $GITHUB_ENV
+          [[ "${{ inputs.device }}" =~ "armv8"  ]] && echo "arch=armv8" >> $GITHUB_ENV
+          [[ "${{ inputs.device }}" =~ "x86-64"  ]] && echo "arch=x86-64" >> $GITHUB_ENV
+          echo "device=$(echo ${{ inputs.device%:* }} | sed 's/-openwrt//' | sed 's/-armv8//')" >> $GITHUB_ENV
           
              
       - name: Create Edit info
