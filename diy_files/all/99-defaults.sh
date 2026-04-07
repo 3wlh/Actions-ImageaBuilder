@@ -11,10 +11,24 @@ if [ -f "$SETTINGS_FILE" ]; then
    source "$SETTINGS_FILE"
 fi
 
-#====================添加插件源====================
+#==================== 添加插件源 ====================
 # sed -i "s/option check_signature/# option check_signature/g" "/etc/opkg.conf"
 opkg-conf="/etc/opkg/customfeeds.conf"
 sed -i '$a\src/gz 3wlh https://packages.11121314.xyz/packages/aarch64_generic' ${opkg-conf}
+
+#========================== TTYD ==========================
+[[ -f "/etc/config/ttyd" ]] && uci delete ttyd.@ttyd[0].interface
+
+#========================== Fstab ==========================
+# 自动挂载未配置的Swap
+uci set fstab.@global[0].anon_swap="0"
+# 自动挂载未配置的磁盘
+uci set fstab.@global[0].anon_mount="0"
+# 自动挂载交换分区
+uci set fstab.@global[0].auto_swap="0"
+# 自动挂载磁盘
+uci set fstab.@global[0].auto_mount="1"
+uci commit fstab
 
 #========================== PPPoE ==========================
 # 设置拨号协议
@@ -35,7 +49,6 @@ fi
 # 更改名称
 if [ -n "${settings_model}" ]; then
 uci set system.@system[0].hostname="${settings_model}"
-uci commit system
 fi
 #========================== 作者信息 ==========================
 # 设置编译作者信息
@@ -44,4 +57,5 @@ NEW_DESCRIPTION="Compiled by 3wlh"
 sed -i "s/DISTRIB_DESCRIPTION='[^']*'/DISTRIB_DESCRIPTION='$NEW_DESCRIPTION'/" "$FILE_PATH"
 # 删除配置文件
 rm -f "${SETTINGS_FILE}"
+uci commit
 exit 0

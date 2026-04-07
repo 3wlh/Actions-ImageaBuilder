@@ -109,6 +109,9 @@ on:
           - name: orangepi-5plus
             package: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/orangepi-5plus.env"
             script: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/orangepi-5plus.sh"
+          - name: x86-64
+            package: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/x86-64.env"
+            script: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/x86-64.sh"
     
 jobs:
   Call_ImageBuilder:
