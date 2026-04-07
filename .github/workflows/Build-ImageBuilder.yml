@@ -71,6 +71,30 @@ on:
           - "10.10.10.254"
           - "192.168.100.1"
           
+      
+        
+      diy_package:
+        description: |
+          设置Diy插件网址
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/nanopi-r6s.env"
+          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/orangepi-5plus.env"
+          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/x86-64.env"
+
+      diy_script:
+        description: |
+          设置Diy初始化脚本网址
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_files/nanopi-r6s.sh"
+          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/orangepi-5plus.sh"
+          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/x86-64.sh"
+          
       docker:
         description: |
           是否编译 Docker 插件
@@ -96,23 +120,6 @@ on:
         required: false
         default: '123'
         
-      diy_package:
-        description: |
-          设置Diy插件网址
-        required: true
-        default: 'all'
-        type: choice
-        options:
-          - name: nanopi-r6s
-            package: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/nanopi-r6s.env"
-            script: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_files/nanopi-r6s.sh"
-          - name: orangepi-5plus
-            package: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/orangepi-5plus.env"
-            script: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/orangepi-5plus.sh"
-          - name: x86-64
-            package: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/x86-64.env"
-            script: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/x86-64.sh"
-    
 jobs:
   Call_ImageBuilder:
     uses: ./.github/workflows/Call_ImageBuilder.yml

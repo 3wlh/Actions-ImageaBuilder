@@ -1,19 +1,13 @@
 #!/bin/bash
-mkdir -p "$(pwd)/files/www/luci-static/resources/view/status/include" &&
-wget -q https://github.com/3wlh/Actions-ImageaBuilder/releases/download/GitHub-Files/29_ports.js \
--O $(pwd)/files/www/luci-static/resources/view/status/include/29_ports.js
+URL="https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_files/all/"
 
 [[ -d "$(pwd)/files/etc/uci-defaults" ]] || mkdir -p "$(pwd)/files/etc/uci-defaults"
-[[ -f "$(pwd)/files/99-defaults.sh" ]] && \
-mv -f "$(pwd)/files/99-defaults.sh" "$(pwd)/files/etc/uci-defaults"
-
-[[ -f "$(pwd)/all/sys-bash.sh" ]] && \
-mv -f "$(pwd)/all/sys-bash.sh" "$(pwd)/files/etc/uci-defaults"
-
-[[ -f "$(pwd)/all/sys-opkg.sh" ]] && \
-mv -f "$(pwd)/all/sys-opkg.sh" "$(pwd)/files/etc/uci-defaults"
+wget -q "${URL}/99-defaults.sh" -O "$(pwd)/files/etc/uci-defaults/99-defaults.sh"
+wget -q "${URL}/sys-opkg.sh" -O "$(pwd)/files/etc/uci-defaults/sys-opkg.sh"
+wget -q "${URL}/sys-bash.sh" -O "$(pwd)/files/etc/uci-defaults/sys-bash.sh"
 
 [[ -d "$(pwd)/files/etc/profile.d" ]] || mkdir -p "$(pwd)/files/etc/profile.d"
-[[ -f "$(pwd)/all/sys-sysinfo.sh" ]] && \
-mv -f "$(pwd)/all/sys-sysinfo.sh" "$(pwd)/files/etc/profile.d"
+wget -q "${URL}/sys-sysinfo.sh" -O "$(pwd)/files/etc/profile.d/sys-sysinfo.sh"
 
+mkdir -p "$(pwd)/files/www/luci-static/resources/view/status/include" &&
+wget -q "${URL}/29_ports.js -O $(pwd)/files/www/luci-static/resources/view/status/include/29_ports.js

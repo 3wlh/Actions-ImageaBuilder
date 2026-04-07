@@ -31,6 +31,7 @@ env:
   UPLOAD_BIN_DIR: false
   PATH_CACHE: /tmp/.cache
   CACHE_IMAGE: imagebuilder:${{ inputs.image }}-${{ inputs.version }}.tar
+  
 
 jobs:
   Build:
@@ -66,11 +67,10 @@ jobs:
           sudo timedatectl set-timezone "Asia/Shanghai"
           echo "time=$(date "+%Y.%m.%d-%H%M%S")" >> $GITHUB_ENV
           echo "profile=${{ inputs.profile }}" >> $GITHUB_ENV
-          [[ "${{ inputs.image }}" =~ "x86-64"  ]] && echo "profile=x86-64" >> $GITHUB_ENV
-          [[ "${{ inputs.image }}" =~ "armsr"  ]] && echo "profile=armsr-armv8" >> $GITHUB_ENV
           [[ "${{ inputs.image }}" =~ "armv8"  ]] && echo "arch=armv8" >> $GITHUB_ENV
           [[ "${{ inputs.image }}" =~ "x86-64"  ]] && echo "arch=x86-64" >> $GITHUB_ENV
           echo "device=$(echo ${{ inputs.image }} | sed 's/-openwrt//' | sed 's/-armv8//')" >> $GITHUB_ENV
+          
              
       - name: Create Edit info
         run: |
@@ -86,13 +86,15 @@ jobs:
           fi
           
       - name: Set executable permissions
-        run: chmod +x ${{ github.workspace }}/diy_make/${{ env.arch }}/make.sh
+        env: 
+          URL: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_make/"
+        run: wget -q "${URL}/${{ env.arch }}/make.sh" -O "$(pwd)/make.sh" && chmod -R 755 "$(pwd)/make.sh"
       
       - name: Check Docker images
         run: |
           mkdir -p ${{ env.PATH_CACHE }}/image
           if [[ -f "${{ env.PATH_CACHE }}/image/${{ env.CACHE_IMAGE }}" ]]; then
-            echo -e "\e[1;32mImport Docker image：\e[0m"
+            echo -e "\e[1;32mImport Docker image：${{ env.CACHE_IMAGE }}\e[0m"
             docker load --input \
             ${{ env.PATH_CACHE }}/image/${{ env.CACHE_IMAGE }}
           else
@@ -129,12 +131,8 @@ jobs:
             --env-file .env \
             -v "${{ env.PATH_CACHE }}/dl:${{ env.builder }}/dl" \
             -v "${{ env.PATH_CACHE }}/packages:${{ env.builder }}/packages" \
-            -v "${{ github.workspace }}/.github/.sh:${{ env.builder }}/SH" \
-            -v "${{ github.workspace }}/diy_env:${{ env.builder }}/DIY_ENV" \
             -v "${{ github.workspace }}/${{ inputs.image }}/bin:${{ env.builder }}/bin" \
-            -v "${{ github.workspace }}/diy_make/${{ env.arch }}/make.sh:${{ env.builder }}/make.sh" \
-            -v "${{ github.workspace }}/diy_files/all:${{ env.builder }}/all" \
-            -v "${{ github.workspace }}/diy_files/${{ env.arch }}/${{ env.profile }}:${{ env.builder }}/files" \
+            -v "${{ github.workspace }}/make.sh:${{ env.builder }}/make.sh" \
             ${{ inputs.branch }}/imagebuilder:${{ env.IMAGE }} /bin/bash ${{ env.builder }}/make.sh
           cat "${{ github.workspace }}/${{ inputs.image }}/bin/.bashrc" 2>/dev/null >> $GITHUB_OUTPUT
           #cat "${{ github.workspace }}/${{ inputs.image }}/bin/.bashrc" 2>/dev/null >> $GITHUB_ENV
