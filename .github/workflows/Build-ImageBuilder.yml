@@ -13,16 +13,16 @@ on:
           - immortalwrt
           - openwrt
           
-      image:
+      device:
         description: |
-          选择 imageBuilder 镜像
+          选择 imageBuilder 镜像和型号
         required: true
-        default: "rockchip-armv8"
+        default: "rockchip-armv8:nanopi-r6s"
         type: choice
         options:
-          - x86-64:generic
-          - rockchip-armv8:nanopi-r6s
-          - rockchip-armv8:orangepi-5plus
+          - x86-64_generic
+          - rockchip-armv8_nanopi-r6s
+          - rockchip-armv8_orangepi-5plus
           
       version:
         description: |
@@ -39,17 +39,6 @@ on:
           - "24.10.1"
           - "24.10.0"
           - "23.05.5"
-      
-      profile:
-        description: |
-          输入 软路由型号 可选值如下：
-        required: true
-        default: 'nanopi-r6s'
-        type: choice
-        options:
-          - nanopi-r6s
-          - orangepi-5plus
-          - x86-64
           
       rootfs_partsize:
         description: |
@@ -127,9 +116,8 @@ jobs:
     secrets: inherit
     with:
       branch: ${{ inputs.branch }}
-      image: ${{ inputs.image }}
+      device: ${{ inputs.device }}
       version: ${{ inputs.version }}
-      profile: ${{ inputs.profile }}
       rootfs_partsize: ${{ inputs.rootfs_partsize }}
       network_lan: ${{ inputs.network_lan }}
       docker: ${{ inputs.docker }}
