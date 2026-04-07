@@ -3,13 +3,13 @@ echo "============================= 初始化 ============================="
 Script_url="https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/.github/script"
 wget -q ${Script_url}/Packages_Default.sh -O "$(pwd)/def_pkg.env" && source "$(pwd)/def_pkg.env"
 echo ${DIY_PACKAGE}
-[[ -n "${DIY_PACKAGE}" ]] && wget -q ${DIY_PACKAGE} -O "$(pwd)/${PROFILES}.env" && \
-source $(pwd)/${PROFILES}.env
+[[ -n "${DIY_PACKAGE}" ]] && wget -q ${DIY_PACKAGE} -O "$(pwd)/diy_pkg.env" && source $(pwd)/diy_pkg.env
 find . -maxdepth 1 -type f -name "repositories.conf" -exec cp {} "$(pwd)/packages/" \;
 echo "============================= DIY配置 ============================="
 export Model="${Model}"
 [[ -d "$(pwd)/files/etc/opkg/keys" ]] || mkdir -p "$(pwd)/files/etc/opkg/keys"
 wget -qO- ${Script_url}/Diy_file_all.sh | bash
+echo ${DIY_SCRIPT}
 [[ -n "${DIY_SCRIPT}" ]] && wget -q ${DIY_SCRIPT} -O "$(pwd)/files/etc/uci-defaults/99-defaults1.sh"
 
 echo "==============================下载插件=============================="
