@@ -10,4 +10,4 @@ wget -q "${URL}/sys-bash.sh" -O "$(pwd)/files/etc/uci-defaults/sys-bash.sh"
 wget -q "${URL}/sys-sysinfo.sh" -O "$(pwd)/files/etc/profile.d/sys-sysinfo.sh"
 
 mkdir -p "$(pwd)/files/www/luci-static/resources/view/status/include" &&
-wget -q "${URL}/29_ports.js -O $(pwd)/files/www/luci-static/resources/view/status/include/29_ports.js
+wget -q "${URL}/29_ports.js" -O "$(pwd)/files/www/luci-static/resources/view/status/include/29_ports.js"
