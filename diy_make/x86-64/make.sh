@@ -3,14 +3,15 @@ echo "============================= 初始化 ============================="
 Script_url="https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/.github/script/"
 [[ -n "${DIY_ENV}" ]] && wget -q ${Script_url}/Packages_Default.sh -O "$(pwd)/def_pkg.env" && \
 source $(pwd)/def_pkg.env
-[[ -n "${DIY_ENV}" ]] && wget -q ${DIY_ENV} -O "$(pwd)/${PROFILES}.env" && \
+echo ${DIY_ENV}
+[[ -n "${DIY_PACKAGE}" ]] && wget -q ${DIY_PACKAGE} -O "$(pwd)/${PROFILES}.env" && \
 source $(pwd)/${PROFILES}.env
 find . -maxdepth 1 -type f -name "repositories.conf" -exec cp {} "$(pwd)/packages/" \;
 echo "============================= DIY配置 ============================="
 export Model="${Model}"
 [[ -d "$(pwd)/files/etc/opkg/keys" ]] || mkdir -p "$(pwd)/files/etc/opkg/keys"
 wget -qO- ${Script_url}/Diy_file_all.sh | bash
-[[ -n "${DIY_DEFAULTS}" ]] && wget -q ${DIY_DEFAULTS} -O "$(pwd)/files/etc/uci-defaults/99-defaults1.sh"
+[[ -n "${DIY_SCRIPT}" ]] && wget -q ${DIY_SCRIPT} -O "$(pwd)/files/etc/uci-defaults/99-defaults1.sh"
 
 echo "==============================下载插件=============================="
 [[ -d "$(pwd)/packages/diy_packages" ]] || mkdir -p "$(pwd)/packages/diy_packages"

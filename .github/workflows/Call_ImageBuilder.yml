@@ -111,9 +111,10 @@ jobs:
           PROFILES=${{ env.profile }}
           BRANCH=${{ inputs.branch }}
           VERSION=${{ inputs.version }}
-          INCLUDE_DOCKER=${{ inputs.docker }}
+          DIY_SCRIPT=${{ inputs.diy_script }}
+          DIY_PACKAGE=${{ inputs.diy_package }}
           NETWORK_LAN=${{ inputs.network_lan }}
-          DIY_DEFAULTS=${{ inputs.diy_defaults }}
+          INCLUDE_DOCKER=${{ inputs.docker }}
           ENABLE_PPPOE=${{ inputs.enable_pppoe }}
           PPPOE_ACCOUNT=${{ inputs.pppoe_account }}
           PPPOE_PASSWORD=${{ inputs.pppoe_password }}
