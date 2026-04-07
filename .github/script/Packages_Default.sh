@@ -16,5 +16,3 @@ PACKAGE="$PACKAGE luci-lib-ipkg"
 PACKAGE="$PACKAGE luci-i18n-base-zh-cn" 
 PACKAGE="$PACKAGE luci-i18n-firewall-zh-cn"
 PACKAGE="$PACKAGE luci-i18n-ttyd-zh-cn"
-# diy
-PACKAGE="$PACKAGE luci-app-scriptrun"
