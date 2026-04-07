@@ -41,7 +41,7 @@ jobs:
         
       - name: Configure docker image
         run: |
-          image="${{ inputs.device%:* }}"
+          image="${inputs.device%:*}"
           if [[ "${{ inputs.version }}" =~ "SNAPSHOT" || "${{ inputs.branch }}" == "openwrt" ]]; then
             IMAGE=${image}-${{ inputs.version }}
           else
@@ -66,9 +66,9 @@ jobs:
           sudo timedatectl set-timezone "Asia/Shanghai"
           echo "time=$(date "+%Y.%m.%d-%H%M%S")" >> $GITHUB_ENV
           echo "profile=${{ inputs.device#*: }}" >> $GITHUB_ENV
-          [[ "${{ inputs.device }}" =~ "armv8"  ]] && echo "arch=armv8" >> $GITHUB_ENV
-          [[ "${{ inputs.device }}" =~ "x86-64"  ]] && echo "arch=x86-64" >> $GITHUB_ENV
-          echo "device=$(echo ${{ inputs.device%:* }} | sed 's/-openwrt//' | sed 's/-armv8//')" >> $GITHUB_ENV
+          [[ "${inputs.device}" =~ "armv8"  ]] && echo "arch=armv8" >> $GITHUB_ENV
+          [[ "${inputs.device}" =~ "x86-64"  ]] && echo "arch=x86-64" >> $GITHUB_ENV
+          echo "device=$(echo ${inputs.device%:*} | sed 's/-openwrt//' | sed 's/-armv8//')" >> $GITHUB_ENV
           
              
       - name: Create Edit info
