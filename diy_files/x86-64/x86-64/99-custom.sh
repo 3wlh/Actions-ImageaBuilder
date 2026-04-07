@@ -1,5 +1,5 @@
 #!/bin/sh
-# immortalwrt固件首次启动时运行的脚本 /etc/uci-defaults/99-custom.sh
+# 固件首次启动时运行的脚本 /etc/uci-defaults/99-custom.sh
 # 输出日志文件
 LOGFILE="/tmp/uci-defaults-log.txt"
 echo "Starting 99-custom.sh at $(date '+%Y-%m-%d %H:%M:%S')" >> $LOGFILE

@@ -48,6 +48,7 @@ on:
         options:
           - nanopi-r6s
           - orangepi-5plus
+          - x86-64
           
       rootfs_partsize:
         description: |
