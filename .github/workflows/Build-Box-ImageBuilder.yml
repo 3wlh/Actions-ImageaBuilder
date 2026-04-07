@@ -340,7 +340,9 @@ jobs:
           fi
           
       - name: Set executable permissions
-        run: chmod +x ${{ github.workspace }}/diy_make/armv8/make.sh
+        env: 
+          URL: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_make/armsr"
+        run: wget -q "${URL}/make.sh" -O "$(pwd)/make.sh" && chmod -R 755 "$(pwd)/make.sh"
       
       - name: Check Docker images
         run: |
@@ -356,7 +358,7 @@ jobs:
             ${{ env.PATH_CACHE }}/image/${{ env.CACHE_IMAGE }} \
             ${{ inputs.branch }}/imagebuilder:${{ env.IMAGE }}
           fi
-          chmod -R 777 "${{ env.PATH_CACHE }}"
+          chmod -R 755 "${{ env.PATH_CACHE }}"
       
       - name: Generate Env File
         run: |
@@ -367,6 +369,8 @@ jobs:
           BRANCH=${{ inputs.branch }}
           VERSION=${{ inputs.version }}
           INCLUDE_DOCKER=${{ inputs.docker }}
+          DIY_SCRIPT=${{ inputs.diy_script }}
+          DIY_PACKAGE=${{ inputs.diy_package }}
           NETWORK_LAN=${{ inputs.network_lan }}
           ENABLE_PPPOE=${{ inputs.enable_pppoe }}
           PPPOE_ACCOUNT=${{ inputs.pppoe_account }}
@@ -382,12 +386,8 @@ jobs:
             --env-file .env \
             -v "${{ env.PATH_CACHE }}/dl:${{ env.builder }}/dl" \
             -v "${{ env.PATH_CACHE }}/packages:${{ env.builder }}/packages" \
-            -v "${{ github.workspace }}/.github/.sh:${{ env.builder }}/SH" \
-            -v "${{ github.workspace }}/diy_env:${{ env.builder }}/DIY_ENV" \
             -v "${{ github.workspace }}/armsr-armv8/bin:${{ env.builder }}/bin" \
-            -v "${{ github.workspace }}/diy_make/armsr/make.sh:${{ env.builder }}/make.sh" \
-            -v "${{ github.workspace }}/diy_files/all:${{ env.builder }}/all" \
-            -v "${{ github.workspace }}/diy_files/armsr/${{ inputs.openwrt_board }}:${{ env.builder }}/files" \
+            -v "${{ github.workspace }}/make.sh:${{ env.builder }}/make.sh" \
             ${{ inputs.branch }}/imagebuilder:${{ env.IMAGE }} /bin/bash ${{ env.builder }}/make.sh
           cat "${{ github.workspace }}/armsr-armv8/bin/.bashrc" 2>/dev/null >> $GITHUB_OUTPUT
           #cat "${{ github.workspace }}/armsr-armv8/bin/.bashrc" 2>/dev/null >> $GITHUB_ENV
