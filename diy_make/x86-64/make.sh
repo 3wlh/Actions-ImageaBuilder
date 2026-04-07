@@ -1,9 +1,8 @@
 #!/bin/bash
 echo "============================= 初始化 ============================="
-Script_url="https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/.github/script/"
-[[ -n "${DIY_ENV}" ]] && wget -q ${Script_url}/Packages_Default.sh -O "$(pwd)/def_pkg.env" && \
-source $(pwd)/def_pkg.env
-echo ${DIY_ENV}
+Script_url="https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/.github/script"
+wget -q ${Script_url}/Packages_Default.sh -O "$(pwd)/def_pkg.env" && source "$(pwd)/def_pkg.env"
+echo ${DIY_PACKAGE}
 [[ -n "${DIY_PACKAGE}" ]] && wget -q ${DIY_PACKAGE} -O "$(pwd)/${PROFILES}.env" && \
 source $(pwd)/${PROFILES}.env
 find . -maxdepth 1 -type f -name "repositories.conf" -exec cp {} "$(pwd)/packages/" \;
