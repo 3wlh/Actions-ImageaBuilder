@@ -65,7 +65,7 @@ on:
         description: |
           设置Diy插件文件或网址
         required: true
-        default: 'all'
+        default: 'diy_env/nanopi-r6s.env'
         type: choice
         options:
           - "diy_env/nanopi-r6s.env"
@@ -76,7 +76,7 @@ on:
         description: |
           设置初始化脚本文件或网址
         required: true
-        default: 'all'
+        default: 'diy_env/nanopi-r6s.env'
         type: choice
         options:
           - "diy_files/nanopi-r6s.sh"
