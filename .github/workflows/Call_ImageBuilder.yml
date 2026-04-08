@@ -57,7 +57,24 @@ jobs:
           echo "IMAGE=${IMAGE}" >> $GITHUB_ENV
           echo "CACHE_IMAGE=imagebuilder:${image}-${{ inputs.version }}.tar" >> $GITHUB_ENV
           echo "CACHE_KEY=${{ inputs.branch }}-${IMAGE}-$(echo "${IMAGE}" | md5sum | awk '{print $1}')" >> $GITHUB_ENV
-          
+      
+       - name: Download Config Data
+        env:
+          regexper: '^(https?)://[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,}(:[0-9]{1,5})?(/[^/]*)*$'
+        run: |
+          # 下载配置数据
+          test -d "$(pwd)/diy_config" || mkdir -pm  755 "$(pwd)/diy_config"
+          if echo "${{ inputs.diy_package }}" | grep -qE "$regexper"; then
+            cp -f ${{ inputs.diy_package }} "$(pwd)/diy_config/diy_pkg.env"
+          else
+            wget -q ${{ inputs.diy_package }} -O "$(pwd)/diy_config/diy_pkg.env"
+          fi
+          if echo "${{ inputs.diy_script }}" | grep -qE "$regexper"; then
+            cp -f ${{ inputs.diy_script }} "$(pwd)/diy_config/defaults.sh"
+          else
+            wget -q ${{ inputs.diy_script }} -O "$(pwd)/diy_config/defaults.sh"
+          fi
+         
       - name: Enable Cache
         uses: actions/cache@main
         with:
@@ -67,7 +84,6 @@ jobs:
       - name: Configure environment variables
         env:
           device: ${{ inputs.device }}
-          regexper: '^(https?)://[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,}(:[0-9]{1,5})?(/[^/]*)*$'
         run: |
           sudo timedatectl set-timezone "Asia/Shanghai"
           echo "time=$(date "+%Y.%m.%d-%H%M%S")" >> $GITHUB_ENV
@@ -76,22 +92,6 @@ jobs:
           [[ "${device}" =~ "x86-64"  ]] && echo "arch=x86-64" >> $GITHUB_ENV
           echo "device=$(echo ${device%_*} | sed 's/-openwrt//' | sed 's/-armv8//')" >> $GITHUB_ENV
       
-      - name: Download Config Data
-        env:
-          regexper: '^(https?)://[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,}(:[0-9]{1,5})?(/[^/]*)*$'
-        run: |
-          # 下载配置数据
-          test -d "$(pwd)/diy_config" || mkdir -pm  755 "$(pwd)/diy_config"
-          if grep -qE "$regexper" <<< "${{ inputs.diy_package }}"; then
-            cp -f ${{ inputs.diy_package }} "$(pwd)/diy_config/diy_pkg.env"
-          else
-            wget -q ${{ inputs.diy_package }} -O "$(pwd)/diy_config/diy_pkg.env"
-          fi
-          if grep -qE "$regexper" <<< "${{ inputs.diy_script }}"; then
-            cp -f ${{ inputs.diy_script }} "$(pwd)/diy_config/defaults.sh"
-          else
-            wget -q ${{ inputs.diy_script }} -O "$(pwd)/diy_config/defaults.sh"
-          fi
              
       - name: Create Edit info
         run: |
