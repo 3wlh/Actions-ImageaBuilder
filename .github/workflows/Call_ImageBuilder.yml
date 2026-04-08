@@ -63,7 +63,7 @@ jobs:
           regexper: '^(https?)://[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,}(:[0-9]{1,5})?(/[^/]*)*$'
         run: |
           # 下载配置数据
-          test -d "$(pwd)/diy_config" || mkdir -pm 755 "$(pwd)/diy_config"
+          test -d "$(pwd)/diy_config" || mkdir -p "$(pwd)/diy_config"
           if grep -qE "$regexper" <<< "${{ inputs.diy_package }}"; then
             cp -f ${{ inputs.diy_package }} "$(pwd)/diy_config/diy_pkg.env"
           else
