@@ -11,7 +11,7 @@ export Model="${Model}"
 [[ -d "$(pwd)/files/etc/opkg/keys" ]] || mkdir -p "$(pwd)/files/etc/opkg/keys"
 wget -qO- ${Script_url}/Diy_file_all.sh | bash
 [[ -f "$(pwd)/diy_config/defaults.sh" ]] && \
-(CP) -f "$(pwd)/diy_config/defaults.sh" "$(pwd)/files/etc/uci-defaults/99-defaults1.sh"
+cp -f "$(pwd)/diy_config/defaults.sh" "$(pwd)/files/etc/uci-defaults/99-defaults1.sh"
 echo "============================= 下载插件 ============================="
 [[ -d "$(pwd)/packages/diy_packages" ]] || mkdir -p "$(pwd)/packages/diy_packages"
 echo "Download_Path: $(pwd)/packages/diy_packages"

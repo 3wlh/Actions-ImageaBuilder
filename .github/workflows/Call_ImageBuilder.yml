@@ -42,6 +42,7 @@ jobs:
         env:
           device: ${{ inputs.device }}
         run: |
+          # 配置Docker镜像数据
           image="${device%_*}"
           if [[ "${{ inputs.version }}" =~ "SNAPSHOT" || "${{ inputs.branch }}" == "openwrt" ]]; then
             IMAGE=${image}-${{ inputs.version }}
@@ -86,6 +87,7 @@ jobs:
         env:
           device: ${{ inputs.device }}
         run: |
+          # 初始化数据变量
           sudo timedatectl set-timezone "Asia/Shanghai"
           echo "time=$(date "+%Y.%m.%d-%H%M%S")" >> $GITHUB_ENV
           echo "profile=${device#*_}" >> $GITHUB_ENV
@@ -95,6 +97,7 @@ jobs:
      
       - name: Create Edit info
         run: |
+          # 创建发布文档
           echo "## 编译时间：\`${{ env.time }}\`" > info.md
           echo "## [![Github](https://img.shields.io/badge/Release文件可在国内加速站下载-FC7C0D?logo=github&logoColor=fff&labelColor=000&style=for-the-badge)](https://ghproxy.net/)" >> info.md
           echo "## 固件信息：" >> info.md
@@ -113,6 +116,7 @@ jobs:
       
       - name: Check Docker images
         run: |
+          # 检查Docker镜像
           mkdir -p ${{ env.PATH_CACHE }}/image
           if [[ -f "${{ env.PATH_CACHE }}/image/${{ env.CACHE_IMAGE }}" ]]; then
             echo -e "\e[1;32mImport Docker image：${{ env.CACHE_IMAGE }}\e[0m"
@@ -145,6 +149,7 @@ jobs:
       - name: Building ${{ inputs.branch }} ${{ env.device }}
         id: building
         run: |
+          # 编译固件
           docker run --rm -i \
             --user root \
             --env-file .env \
