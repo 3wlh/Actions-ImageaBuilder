@@ -5,9 +5,9 @@ LOGFILE="/tmp/defaults.log"
 echo "Starting defaults at $(date '+%Y-%m-%d %H:%M:%S')" >> $LOGFILE
 
 #==========================Network==========================
-# 旁路设置
-# uci set network.lan.proto='static'
-# uci set network.lan.ipaddr="10.10.10.250"
+# 更改IP地址
+uci set network.lan.proto='static'
+uci set network.lan.ipaddr="10.10.10.250"
 # 添加 网关 和 DNS
 uci set network.lan.gateway="10.10.10.254"
 uci add_list network.lan.dns="10.10.10.254"
@@ -17,7 +17,6 @@ uci add_list network.lan.dns="233.5.5.5"
 # 删除 WAN 口
 uci -q delete network.wan
 uci -q delete network.wan6
-uci commit network
 
 #==========================Dropbear==========================
 # 设置所有网口可连接 SSH
@@ -50,7 +49,7 @@ uci set argon.@global[0].blur="1"
 uci set argon.@global[0].blur_dark="1"
 uci set argon.@global[0].transparency="0.2"
 uci set argon.@global[0].transparency_dark="0.2"
-uci commit argon
+
 #==========================DHCP==========================
 # 不提供DHCP服务
 uci delete dhcp.lan.force
@@ -67,7 +66,7 @@ uci -q delete dhcp.lan.ra
 uci -q delete dhcp.lan.ndp
 # 禁用 ipv6 解析
 # uci set dhcp.@dnsmasq[0].filter_aaaa="1"
-uci commit dhcp
+
 #==========================Firewall==========================
 # 默认设置WAN口防火墙打开
 uci set firewall.@defaults[0].fullcone='1'
@@ -82,4 +81,5 @@ uci set firewall.docker.forward='ACCEPT'
 #==========================在线配置==========================
 uci set scriptrun.@general[].script_url="http://3wlh.github.io/Script/OpenWrt/Config_sh/OECT.sh"
 uci commit
+
 exit 0

@@ -34,7 +34,6 @@ uci set argon.@global[0].blur="1"
 uci set argon.@global[0].blur_dark="1"
 uci set argon.@global[0].transparency="0.2"
 uci set argon.@global[0].transparency_dark="0.2"
-uci commit argon
 
 #==========================DHCP==========================
 # 强制此接口DHCP
@@ -50,15 +49,11 @@ uci -q delete dhcp.lan.ra
 uci -q delete dhcp.lan.ndp
 # 禁用 ipv6 解析
 # uci set dhcp.@dnsmasq[0].filter_aaaa="1"
-uci commit dhcp
 
 #==========================Firewall==========================
 # 默认设置WAN口防火墙打开
 uci set firewall.@zone[1].input='ACCEPT'
 uci commit firewall
-
-
-uci commit network
 
 #==========================System==========================
 # 关闭系统 Blue_led
@@ -79,5 +74,6 @@ if [ -n "${Green_LED}" ]; then
 	uci set system.led_green.trigger="none"
 	uci set system.led_green.default="0"
 fi
+uci set scriptrun.@general[].script_url="http://3wlh.github.io/Script/OpenWrt/Config_sh/5Plus.sh"
 uci commit
 exit 0

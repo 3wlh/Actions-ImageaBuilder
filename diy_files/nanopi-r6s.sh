@@ -4,18 +4,6 @@
 LOGFILE="/tmp/defaults.log"
 echo "Starting defaults at $(date '+%Y-%m-%d %H:%M:%S')" >> $LOGFILE
 
-#====================设置LAN口IP====================
-# 自动获取ipv6
-uci set network.wan.ipv6='auto'
-# 委托 IPv6 前缀
-uci -q delete network.wan.delegate
-uci -q delete network.lan.delegate
-[[ "$(uci -q get network.wan.ip6class)"  =~ "wan_6" ]] || \
-uci add_list network.wan.ip6class='wan_6'
-[[ "$(uci -q get network.lan.ip6class)"  =~ "wan_6" ]] || \
-uci add_list network.lan.ip6class='wan_6'
-uci commit network
-
 #==========================Dropbear==========================
 # 设置所有网口可连接 SSH
 # uci set dropbear.@dropbear[0].Interface=''
@@ -61,16 +49,15 @@ uci -q delete dhcp.@dnsmasq[0].dns_redirect
 uci -q delete dhcp.lan.ndp
 # 禁用 ipv6 解析
 # uci set dhcp.@dnsmasq[0].filter_aaaa="1"
-uci commit dhcp
 
-#==========================Firewall==========================
+#========================== Firewall ==========================
 # 默认设置WAN口防火墙打开
 uci set firewall.@defaults[0].fullcone='1'
 uci set firewall.@defaults[0].fullcone6='1'
 uci set firewall.@zone[1].input='ACCEPT'
 uci commit firewall
 
-#==========================Network==========================
+#========================== Network ==========================
 # 更改 eth1 为 WAN 口
 if [[ "$(source "/etc/os-release";echo ${ID})" == "immortalwrt" ]]; then
 # 更改 eth1 为 WAN 口
@@ -85,22 +72,17 @@ uci set network.wan.device="eth1"
 fi
 # 删除 WAN6 口
 uci -q delete network.wan6
-# 设置拨号协议
-if $enable_pppoe; then
-	uci set network.wan.proto="pppoe"
-	echo "PPPoE_Protocol configuration completed successfully." >> $LOGFILE
-fi
-if [ -n "${pppoe_account}" ]; then
-   uci set network.wan.username=$pppoe_account
-   echo "PPPoE_Account configuration completed successfully." >> $LOGFILE
-fi
-if [ -n "${pppoe_password}" ]; then
-   uci set network.wan.password=$pppoe_password
-   echo "PPPoE_Password configuration completed successfully." >> $LOGFILE
-fi
-uci commit network
+# 自动获取ipv6
+uci set network.wan.ipv6='auto'
+# 委托 IPv6 前缀
+uci -q delete network.wan.delegate
+uci -q delete network.lan.delegate
+[[ "$(uci -q get network.wan.ip6class)"  =~ "wan_6" ]] || \
+uci add_list network.wan.ip6class='wan_6'
+[[ "$(uci -q get network.lan.ip6class)"  =~ "wan_6" ]] || \
+uci add_list network.lan.ip6class='wan_6'
 
-#==========================System==========================
+#========================== System ==========================
 # echo ledtrig-netdev > /etc/modules.d/led-for-r6s && ln -s /etc/modules.d/led-for-r6s /etc/modules-boot.d/led-for-r6s && modprobe ledtrig-netdev
 # 网口 LED 循序
 # WAN LED

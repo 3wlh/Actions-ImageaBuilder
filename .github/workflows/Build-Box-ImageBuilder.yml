@@ -259,8 +259,8 @@ on:
         default: 'all'
         type: choice
         options:
-          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/wxy-oect.env"
-          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/orangepi-5plus.env"
+          - "diy_env/wxy-oect.env"
+          - "diy_env/armsr-5plus.env"
           
       diy_script:
         description: |
@@ -269,8 +269,8 @@ on:
         default: 'all'
         type: choice
         options:
-          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_files/wxy-oect.sh"
-          - "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_env/orangepi-5plus.sh"
+          - "diy_files/wxy-oect.sh"
+          - "orangepi-5plus.sh"
          
       docker:
         description: |

@@ -11,6 +11,10 @@ if [ -f "$SETTINGS_FILE" ]; then
    source "$SETTINGS_FILE"
 fi
 
+#=================== 设置LAN口IP ===================
+if [ -n "${settings_lan}" ]; then
+uci set network.lan.ipaddr="${settings_lan}"
+fi
 #==================== 添加插件源 ====================
 # sed -i "s/option check_signature/# option check_signature/g" "/etc/opkg.conf"
 opkg-conf="/etc/opkg/customfeeds.conf"
@@ -28,7 +32,6 @@ uci set fstab.@global[0].anon_mount="0"
 uci set fstab.@global[0].auto_swap="0"
 # 自动挂载磁盘
 uci set fstab.@global[0].auto_mount="1"
-uci commit fstab
 
 #========================== PPPoE ==========================
 # 设置拨号协议
