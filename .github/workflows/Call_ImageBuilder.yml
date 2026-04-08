@@ -58,7 +58,7 @@ jobs:
           echo "CACHE_IMAGE=imagebuilder:${image}-${{ inputs.version }}.tar" >> $GITHUB_ENV
           echo "CACHE_KEY=${{ inputs.branch }}-${IMAGE}-$(echo "${IMAGE}" | md5sum | awk '{print $1}')" >> $GITHUB_ENV
       
-       - name: Download Config Data
+      - name: Download Config Data
         env:
           regexper: '^(https?)://[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,}(:[0-9]{1,5})?(/[^/]*)*$'
         run: |
@@ -74,7 +74,7 @@ jobs:
           else
             wget -q ${{ inputs.diy_script }} -O "$(pwd)/diy_config/defaults.sh"
           fi
-         
+          
       - name: Enable Cache
         uses: actions/cache@main
         with:
