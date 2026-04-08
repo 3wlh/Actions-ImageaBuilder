@@ -17,7 +17,7 @@ on:
         description: |
           选择 imageBuilder 镜像和型号
         required: true
-        default: "rockchip-armv8:nanopi-r6s"
+        default: "rockchip-armv8_nanopi-r6s"
         type: choice
         options:
           - x86-64_generic
