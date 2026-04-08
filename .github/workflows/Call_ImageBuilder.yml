@@ -111,7 +111,7 @@ jobs:
           
       - name: Set executable permissions
         env: 
-          URL: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_make/"
+          URL: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/make/"
         run: wget -q "${URL}/${{ env.arch }}/make.sh" -O "$(pwd)/make.sh" && chmod -R 755 "$(pwd)/make.sh"
       
       - name: Check Docker images
