@@ -85,7 +85,7 @@ jobs:
             [[ "${{ inputs.diy_download }}" != "all" ]] && \
             cp -f ${{ inputs.diy_download }} "$(pwd)/diy_config/url"
           fi
-          ls
+          ls "$(pwd)/diy_config"
          
       - name: Enable Cache
         uses: actions/cache@main
