@@ -145,9 +145,9 @@ https://github.com/user/repo/releases/download/v1.0/luci-i18n-example-zh-cn_1.0_
 **ImmortalWrt：**
 <details>
 <summary>ImmortalWrt：aarch64_generic</summary>
-[ImmortalWrt luci](https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/luci/) <br><br>
-[ImmortalWrt base](https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/base/) <br><br>
-[ImmortalWrt packages](https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/packages/) <br>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/luci/">ImmortalWrt luci</a><br>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/base/">ImmortalWrt base</a><br>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/packages/">ImmortalWrt packages</a>
 </details>
 #### ImmortalWrt：aarch64_generic
 <br>
