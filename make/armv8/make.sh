@@ -17,7 +17,7 @@ cp -f "$(pwd)/diy_config/defaults.sh" "$(pwd)/files/etc/uci-defaults/99-defaults
 echo "============================= 下载插件 ============================="
 [[ -d "$(pwd)/packages/diy_packages" ]] || mkdir -p "$(pwd)/packages/diy_packages"
 echo "Download_Path: $(pwd)/packages/diy_packages"
-[[ -f "$(pwd)/diy_config/url" ]] && Packages_Download "$(pwd)/diy_config/url" "$(pwd)/packages/diy_packages"
+[[ -f "$(pwd)/diy_config/url" ]] && { echo "开始下载：";Packages_Download "$(pwd)/diy_config/url" "$(pwd)/packages/diy_packages"; }
 # 添加签名
 echo -e "untrusted comment: public key 29026b52f8ff825c\nRWQpAmtS+P+CXP4/60amOLDZs7jqKfTrFlKt5+UHYTU0ED9pRmh73vz7" >\
 "$(pwd)/keys/29026b52f8ff825c" && cp -f "$(pwd)/keys/29026b52f8ff825c" "$(pwd)/files/etc/opkg/keys/"
