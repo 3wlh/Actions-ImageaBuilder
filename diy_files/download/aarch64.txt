@@ -1,0 +1,1 @@
+https://github.com/3wlh/OpenWrt_Packages/releases/download/GitHub-Actions_luci-app-photopea/luci-app-photopea_26.04.09-r222835_aarch64_generic.ipk
