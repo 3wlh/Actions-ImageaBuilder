@@ -142,10 +142,10 @@ https://github.com/user/repo/releases/download/v1.0/luci-i18n-example-zh-cn_1.0_
 每行一个下载链接，构建时会自动下载并集成到固件中。
 
 ## 如何查询都有哪些插件?
+
 ** ImmortalWrt: **
 <details>
 <summary>aarch64_generic</summary>
-
 <a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/targets/rockchip/armv8/kmods/">kmods</a><br>
 <a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/luci/">luci</a><br>
 <a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/base/">base</a><br>
@@ -153,7 +153,6 @@ https://github.com/user/repo/releases/download/v1.0/luci-i18n-example-zh-cn_1.0_
 </details>
 <details>
 <summary>x86_64</summary>
-
 <a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/targets//x86/64/kmods/">kmods</a><br>
 <a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/x86_64/luci/">luci</a><br>
 <a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/x86_64/base/">base</a><br>
@@ -163,7 +162,6 @@ https://github.com/user/repo/releases/download/v1.0/luci-i18n-example-zh-cn_1.0_
 ** OpenWrt: **
 <details>
 <summary>aarch64_generic</summary>
-
 <a href="https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/targets/rockchip/armv8/kmods/">kmods</a><br>
 <a href="https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/luci/">luci</a><br>
 <a href="https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/base/">base</a><br>
@@ -171,7 +169,6 @@ https://github.com/user/repo/releases/download/v1.0/luci-i18n-example-zh-cn_1.0_
 </details>
 <details>
 <summary>x86_64</summary>
-
 <a href="https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/targets//x86/64/kmods/">kmods</a><br>
 <a href="https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/x86_64/luci/">luci</a><br>
 <a href="https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/x86_64/base/">base</a><br>
