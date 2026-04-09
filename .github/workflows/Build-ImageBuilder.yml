@@ -83,15 +83,16 @@ on:
           - "diy_files/orangepi-5plus.sh"
           - "diy_files/x86-64.sh"
       
-      diy_script:
+      diy_download:
         description: |
-          设置初始化脚本文件或网址
+          下载自定义插件
         required: true
         default: 'all'
         type: choice
         options:
           - "all"
-          - "diy_files/download.txt"
+          - "diy_download/aarch64.txt"
+          - "diy_download/x86-64.txt"
         
       docker:
         description: |
@@ -134,4 +135,5 @@ jobs:
       pppoe_password: ${{ inputs.pppoe_password }}
       diy_package: ${{ inputs.diy_package }}
       diy_script: ${{ inputs.diy_script }}
+      diy_download: ${{ inputs.diy_download }}
       
