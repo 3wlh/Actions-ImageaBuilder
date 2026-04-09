@@ -251,8 +251,6 @@ jobs:
           BRANCH=${{ inputs.branch }}
           VERSION=${{ inputs.version }}
           INCLUDE_DOCKER=${{ inputs.docker }}
-          DIY_SCRIPT=${{ inputs.diy_script }}
-          DIY_PACKAGE=${{ inputs.diy_package }}
           NETWORK_LAN=${{ inputs.network_lan }}
           ENABLE_PPPOE=${{ inputs.enable_pppoe }}
           PPPOE_ACCOUNT=${{ inputs.pppoe_account }}
@@ -269,6 +267,7 @@ jobs:
             -v "${{ env.PATH_CACHE }}/dl:${{ env.builder }}/dl" \
             -v "${{ env.PATH_CACHE }}/packages:${{ env.builder }}/packages" \
             -v "${{ github.workspace }}/armsr-armv8/bin:${{ env.builder }}/bin" \
+            -v "${{ github.workspace }}/diy_config:${{ env.builder }}/diy_config" \
             -v "${{ github.workspace }}/make.sh:${{ env.builder }}/make.sh" \
             ${{ inputs.branch }}/imagebuilder:${{ env.IMAGE }} /bin/bash ${{ env.builder }}/make.sh
           cat "${{ github.workspace }}/armsr-armv8/bin/.bashrc" 2>/dev/null >> $GITHUB_OUTPUT
