@@ -75,64 +75,6 @@ DIY_PACKAGES="$DIY_PACKAGES luci-app-v2ray-server xray-core"
 | `PROFILE` | OpenWrt 设备 Profile，决定目标设备类型 |
 | `DIY_PACKAGES` | 需要额外安装的软件包列表 |
 
-### diy_files 初始化脚本
-
-初始化脚本在固件首次启动时自动执行，用于配置系统设置。
-
-**文件示例 (`diy_files/x86-64.sh`)：**
-```bash
-#!/bin/sh
-# 固件首次启动时运行的脚本
-
-# 设置 Argon 主题
-uci set argon.@global[0].online_wallpaper="none"
-uci set argon.@global[0].mode="light"
-uci set argon.@global[0].primary="#5e72e4"
-
-# 配置 DHCP
-uci set dhcp.lan.force='1'
-
-# 配置防火墙
-uci set firewall.@zone[1].input='ACCEPT'
-
-uci commit
-exit 0
-```
-
-**常用配置示例：**
-
-<details>
-<summary>设置 LAN 口 IP</summary>
-
-```bash
-uci set network.lan.ipaddr="192.168.1.1"
-uci set network.lan.netmask="255.255.255.0"
-```
-</details>
-
-<details>
-<summary>配置 PPPoE 拨号</summary>
-
-```bash
-uci set network.wan.proto="pppoe"
-uci set network.wan.username="宽带账号"
-uci set network.wan.password="宽带密码"
-```
-</details>
-
-<details>
-<summary>添加软件源</summary>
-
-```bash
-echo "src/gz custom https://example.com/packages/x86_64" >> /etc/opkg/customfeeds.conf
-```
-</details>
-
-
-### diy_download 自定义插件
-
-用于下载不在官方仓库中的 ipk 插件。
-
 **文件示例 (`diy_download/x86-64.txt`)：**
 ```
 https://github.com/user/repo/releases/download/v1.0/luci-app-example_1.0_x86_64.ipk
@@ -146,7 +88,7 @@ https://github.com/user/repo/releases/download/v1.0/luci-i18n-example-zh-cn_1.0_
 **ImmortalWrt:**
 
 <details>
-<summary>aarch64_generic</summary>
+<summary>aarch64</summary>
 <a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/kmods/" target="_blank">kmods</a><br>
 <a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/luci/" target="_blank">luci</a><br>
 <a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/base/" target="_blank">base</a><br>
@@ -164,7 +106,7 @@ https://github.com/user/repo/releases/download/v1.0/luci-i18n-example-zh-cn_1.0_
 **OpenWrt:**
 
 <details>
-<summary>aarch64_generic</summary>
+<summary>aarch64</summary>
 <a href="https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/kmods/" target="_blank">kmods</a><br>
 <a href="https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/luci/" target="_blank">luci</a><br>
 <a href="https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/base/" target="_blank">base</a><br>
