@@ -3,7 +3,7 @@ regexper='^(https?)://[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,}(:[0-9]{1,5})?(/[^/]*)*$'
 dir="${2}"
 function download(){
     curl -# -L --fail "${1}" -o "${dir}/$(basename ${1})"
-    if [[ "$(du -b $(pwd)/$(basename ${1}) 2>/dev/null | awk '{print $1}')" -le "512" ]]; then
+    if [[ "$(du -b ${dir}/$(basename ${1})) 2>/dev/null | awk '{print $1}')" -le "512" ]]; then
 		echo -e "$(date '+%Y-%m-%d %H:%M:%S')\e[1;31m - 【$(basename ${1})】下载失败\e[0m"
 		exit
 	fi
