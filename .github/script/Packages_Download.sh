@@ -11,11 +11,11 @@ function download(){
 }
 
 function handle(){
-	cat "${1}" | \
+	cat "${1}" 2>/dev/null | \
 	while IFS= read -r LINE; do
 		if grep -qE "$regexper" <<< "${LINE}"; then
 			echo "Downloading ${LINE}"
-			[[ $(curl -o /dev/null -s --head -w "%{http_code}" "${LINE}") -ge 400 ]] && { echo "无法访问";exit }
+			[[ $(curl -o /dev/null -s --head -w "%{http_code}" "${LINE}") -ge 400 ]] && { echo "无法访问"; exit; }
 			download "${LINE}"
 		fi
 	done
