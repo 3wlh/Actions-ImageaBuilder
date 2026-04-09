@@ -193,7 +193,7 @@ jobs:
           if grep -qE "$regexper" <<< "${{ inputs.diy_download }}"; then
             wget -q ${{ inputs.diy_download }} -O "$(pwd)/diy_config/url"
           else
-            [ "${{ inputs.diy_download }}" != "all" ] && \
+            [[ "${{ inputs.diy_download }}" != "all" ]] && \
             cp -f ${{ inputs.diy_download }} "$(pwd)/diy_config/url"
           fi
           ls "$(pwd)/diy_config"
