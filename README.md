@@ -56,10 +56,8 @@
 
 设备环境配置文件用于定义设备型号和需要安装的软件包列表。
 
-**文件示例 (`diy_env/*.env`)：**
-
 <details>
-<summary>env文件</summary>
+<summary>文件示例 (`diy_env/*.env`)</summary>
 
 ```bash
 Model="x86-64"                     # 设备模型名称
