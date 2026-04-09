@@ -82,7 +82,17 @@ on:
           - "diy_files/nanopi-r6s.sh"
           - "diy_files/orangepi-5plus.sh"
           - "diy_files/x86-64.sh"
-          
+      
+      diy_script:
+        description: |
+          设置初始化脚本文件或网址
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - "all"
+          - "diy_files/download.txt"
+        
       docker:
         description: |
           是否编译 Docker 插件
@@ -124,3 +134,4 @@ jobs:
       pppoe_password: ${{ inputs.pppoe_password }}
       diy_package: ${{ inputs.diy_package }}
       diy_script: ${{ inputs.diy_script }}
+      
