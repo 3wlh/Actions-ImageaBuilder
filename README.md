@@ -142,31 +142,36 @@ https://github.com/user/repo/releases/download/v1.0/luci-i18n-example-zh-cn_1.0_
 每行一个下载链接，构建时会自动下载并集成到固件中。
 
 ## 如何查询都有哪些插件?
-**ImmortalWrt：**
+**ImmortalWrt**
 <details>
-<summary>ImmortalWrt：aarch64_generic</summary>
-<a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/luci/">ImmortalWrt luci</a><br>
-<a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/base/">ImmortalWrt base</a><br>
-<a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/packages/">ImmortalWrt packages</a>
+<summary>aarch64_generic</summary>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/targets/rockchip/armv8/kmods/">kmods</a><br>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/luci/">luci</a><br>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/base/">base</a><br>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/packages/">packages</a>
 </details>
-#### ImmortalWrt：aarch64_generic
-<br>
-[ImmortalWrt kmods](https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/targets/rockchip/armv8/kmods/)
-#### ImmortalWrt：x86_64
-[ImmortalWrt luci](https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/x86_64/luci/) <br><br>
-[ImmortalWrt base](https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/x86_64/base/) <br><br>
-[ImmortalWrt packages](https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/x86_64/packages/) <br><br>
-[ImmortalWrt kmods](https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/targets/x86/64/kmods/)
-#### OpenWrt：aarch64_generic
-[OpenWrt luci](https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/luci/) <br><br>
-[OpenWrt base](https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/base/) <br><br>
-[OpenWrt packages](https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/packages/) <br><br>
-[OpenWrt kmods](https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/targets/rockchip/armv8/kmods/)
-#### OpenWrt：x86_64
-[OpenWrt luci](https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/x86_64/luci/) <br><br>
-[OpenWrt base](https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/x86_64/base/) <br><br>
-[OpenWrt packages](https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/x86_64/packages/) <br><br>
-[OpenWrt kmods](https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/targets/x86/64/kmods/)
+<details>
+<summary>x86_64</summary>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/targets//x86/64/kmods/">kmods</a><br>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/x86_64/luci/">luci</a><br>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/x86_64/base/">base</a><br>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10-SNAPSHOT/packages/x86_64/packages/">packages</a>
+</details>
+**OpenWrt**
+<details>
+<summary>aarch64_generic</summary>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/targets/rockchip/armv8/kmods/">kmods</a><br>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/luci/">luci</a><br>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/base/">base</a><br>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/aarch64_generic/packages/">packages</a>
+</details>
+<details>
+<summary>x86_64</summary>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/targets//x86/64/kmods/">kmods</a><br>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/x86_64/luci/">luci</a><br>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/x86_64/base/">base</a><br>
+<a href="https://mirrors.sjtug.sjtu.edu.cn/openwrt/releases/24.10-SNAPSHOT/packages/x86_64/packages/">packages</a>
+</details>
 # 鸣谢
 ### https://github.com/openwrt
 ### https://github.com/immortalwrt
