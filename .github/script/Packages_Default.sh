@@ -3,6 +3,7 @@
 # kmods
 PACKAGE="$PACKAGE kmod-tcp-bbr kmod-lib-zstd kmod-thermal kmod-input-core"
 PACKAGE="$PACKAGE kmod-drm kmod-drm-kms-helper kmod-drm-display-helper kmod-drm-buddy kmod-drm-ttm"
+PACKAGE="$PACKAGE kmod-usb-net-rndis"  # USB网卡
 PACKAGE="$PACKAGE kmod-usb-core kmod-usb2 kmod-usb3 kmod-usb-ohci kmod-usb-storage kmod-scsi-generic" # USB驱动
 PACKAGE="$PACKAGE kmod-nft-offload kmod-nft-nat"
 PACKAGE="$PACKAGE libstdcpp6" # C++支持库文件libstdc++.so.6
