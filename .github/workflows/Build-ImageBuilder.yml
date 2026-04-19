@@ -112,12 +112,12 @@ on:
         description: |
           是否添加 宽带账号? (可留空)
         required: false
-        default: '123'
+        default: 'sXFSp9KajUBYSpLZ/AxohQ=='
       pppoe_password:
         description: |
           是否添加 宽带密码? (可留空)
         required: false
-        default: '123'
+        default: '123fi61fLssRYbrwCw8iuc0yQ=='
         
 jobs:
   Call_ImageBuilder:
