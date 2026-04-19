@@ -5,7 +5,7 @@ LOGFILE="/tmp/defaults.log"
 echo "Starting defaults at $(date '+%Y-%m-%d %H:%M:%S')" >> $LOGFILE
 
 #==========================MDDNS==========================
-if [ -f "$(uci -q get mddns.config)" ]; then
+if [ -n "$(uci -q get mddns.config)" ]; then
 	uci set mddns.config.enabled="1"
 	uci set mddns.config.online_config="https://cnb.cool/3wlh/Script/-/git/raw/main/OpenWrt/mddns/config.json"
 fi
