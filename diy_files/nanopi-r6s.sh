@@ -60,8 +60,16 @@ uci -q delete dhcp.lan.ndp
 uci set firewall.@defaults[0].fullcone='1'
 uci set firewall.@defaults[0].fullcone6='1'
 uci set firewall.@zone[1].input='ACCEPT'
-uci commit firewall
-
+data="$(uci -q show firewall)"
+if [ -z "$(echo ${data} | grep "src_dport='8'")" ]; then
+	uci_id="$(uci add firewall redirect)"
+	uci set firewall.${uci_id}.target="DNAT"
+	uci set firewall.${uci_id}.name="OpenWrt_WEB"
+	uci set firewall.${uci_id}.src="wan"
+	uci set firewall.${uci_id}.src_dport="8"
+	uci set firewall.${uci_id}.dest_ip="10.10.10.254"
+	uci set firewall.${uci_id}.dest_port="80"
+fi
 #========================== Network ==========================
 # 更改 eth1 为 WAN 口
 if [[ "$(source "/etc/os-release";echo ${ID})" == "immortalwrt" ]]; then
