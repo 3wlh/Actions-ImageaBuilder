@@ -4,6 +4,11 @@
 LOGFILE="/tmp/defaults.log"
 echo "Starting defaults at $(date '+%Y-%m-%d %H:%M:%S')" >> $LOGFILE
 
+#==========================MDDNS==========================
+if [ -f "$(uci -q get mddns.config)" ]; then
+	uci set mddns.config.enabled="1"
+	uci set mddns.config.online_config="https://cnb.cool/3wlh/Script/-/git/raw/main/OpenWrt/mddns/config.json"
+fi
 #==========================Dropbear==========================
 # 设置所有网口可连接 SSH
 # uci set dropbear.@dropbear[0].Interface=''
@@ -108,7 +113,6 @@ if [ -n "${RED_LED}" ]; then
 	uci set system.led_red.trigger="none"
 	uci set system.led_red.default="0"
 fi
-
 uci set scriptrun.@general[0].script_url="http://3wlh.github.io/Script/OpenWrt/Config_sh/R6S.sh"
 uci commit
 exit 0
