@@ -117,7 +117,7 @@ on:
         description: |
           是否添加 宽带密码? (可留空)
         required: false
-        default: '123fi61fLssRYbrwCw8iuc0yQ=='
+        default: 'fi61fLssRYbrwCw8iuc0yQ=='
         
 jobs:
   Call_ImageBuilder:
