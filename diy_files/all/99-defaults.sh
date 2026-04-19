@@ -8,7 +8,7 @@ mac="$(ip -o link show eth0 2>/dev/null | grep -Eo 'permaddr ([0-9A-Fa-f]{2}:){5
 [ -z "${mac}" ] && mac="$(cat /sys/class/net/eth0/address 2>/dev/null)"
 [ -n "${mac}" ] && key="$(echo -n "${mac}" | md5sum | awk '{print $1}' | cut -c9-24)"
 function AES_D(){ #解密函数
-[ -z "$1" ] || echo -n "$1" | openssl enc -e -aes-128-cbc -a -K ${key} -iv ${key} -base64 -d 2>/dev/null
+[ -z "$1" ] || echo "$1" | tr -d "\n" |openssl enc -e -aes-128-cbc -a -K ${key} -iv ${key} -base64 -d 2>/dev/null
 }
 # 检查配置文件diy-settings是否存在
 SETTINGS_FILE="/etc/config/diy-settings"
@@ -46,12 +46,14 @@ if $enable_pppoe; then
 	echo "PPPoE_Protocol configuration completed successfully." >> $LOGFILE
 fi
 if [ -n "${key}" ]; then
-   if [ -n "$(AES_D "${pppoe_account}")" ]; then
-      uci set network.wan.username=$pppoe_account
+   account="$(AES_D "${pppoe_account}")"
+   if [ -n "${account}" ]; then
+      uci set network.wan.username="${account}"
       echo "PPPoE_Account configuration completed successfully." >> $LOGFILE
    fi
-   if [ -n "$(AES_D "${pppoe_password}")" ]; then
-      uci set network.wan.password=$pppoe_password
+   password="$(AES_D "${pppoe_password}")"
+   if [ -n "${password}" ]; then
+      uci set network.wan.password="${password}"
       echo "PPPoE_Password configuration completed successfully." >> $LOGFILE
    fi
 fi
