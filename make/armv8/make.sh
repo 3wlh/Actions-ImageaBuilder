@@ -1,6 +1,10 @@
 #!/bin/bash
 echo "============================= 下载Script ============================="
 Script_url="https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/.github/script"
+dtb_url="https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_files/rk3588-orangepi-5-plus.dtb"
+wget -q ${Script_url}/Packages_Download.sh -O "/tmp/rk3588-orangepi-5-plus.dtb"
+find "$(pwd)/build_dir" -type f -name "*rk3588-orangepi-5-plus.dtb" -exec cp "/tmp/rk3588-orangepi-5-plus.dtb" {} \;
+
 wget -q ${Script_url}/Packages_Download.sh -O "/bin/Packages_Download" && chmod 755 "/bin/Packages_Download"
 wget -q ${Script_url}/Replace.sh -O "/bin/Replace" && chmod 755 "/bin/Replace"
 wget -q ${Script_url}/Packages_Default.sh -O "$(pwd)/def_pkg.env" && source "$(pwd)/def_pkg.env"
