@@ -1,11 +1,11 @@
 #!/bin/bash
 echo "============================= 下载Script ============================="
 Script_url="https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/.github/script"
-dtb_url="https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/diy_files/rk3588-orangepi-5-plus.dtb"
-wget -q ${dtb_url} -O "/tmp/rk3588-orangepi-5-plus.dtb"
-du -h "/tmp/rk3588-orangepi-5-plus.dtb"
-find "$(pwd)/build_dir" -type f -name "*rk3588-orangepi-5-plus.dtb" -exec cp "/tmp/rk3588-orangepi-5-plus.dtb" {} \;
-find "$(pwd)/build_dir" -type f -name "*rk3588-orangepi-5-plus.dtb" -exec du -h {} \;
+dts_url="https://raw.githubusercontent.com/ophub/linux-6.12.y/refs/heads/main/arch/arm64/boot/dts/rockchip/rk3588-base.dtsi"
+wget -q ${dts_url} -O "/tmp/rk3588-base.dtsi"
+du -h "/tmp/rk3588-base.dtsi"
+find "$(pwd)/build_dir" -type f -name "*rk3588-base.dtsi*" -exec cp "/tmp/rk3588-base.dtsi" {} \;
+find "$(pwd)/build_dir" -type f -name "*rk3588-base.dtsi*" -exec du -h {} \;
 
 wget -q ${Script_url}/Packages_Download.sh -O "/bin/Packages_Download" && chmod 755 "/bin/Packages_Download"
 wget -q ${Script_url}/Replace.sh -O "/bin/Replace" && chmod 755 "/bin/Replace"
@@ -114,7 +114,7 @@ echo "========== kmods版本 =========="
 wget -qO- ${Script_url}/Kmods.sh | bash
 echo "============================= 打包镜像 ============================="
 cp -f "$(pwd)/repositories.conf" "$(pwd)/bin/repositories.conf"
-make image PROFILE=$PROFILE PACKAGES="$PACKAGES" FILES="$(pwd)/files" ROOTFS_PARTSIZE=$ROOTFS_PARTSIZE
+make image PROFILE=$PROFILE REBUILD_DTB=1 PACKAGES="$PACKAGES" FILES="$(pwd)/files" ROOTFS_PARTSIZE=$ROOTFS_PARTSIZE
 echo "============================= 构建结果 ============================="
 if [ $? -ne 0 ]; then
     echo "$(date '+%Y-%m-%d %H:%M:%S') - 打包镜像失败!"
