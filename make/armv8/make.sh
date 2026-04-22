@@ -1,12 +1,6 @@
 #!/bin/bash
 echo "============================= 下载Script ============================="
 Script_url="https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/.github/script"
-dts_url="https://raw.githubusercontent.com/ophub/linux-6.12.y/refs/heads/main/arch/arm64/boot/dts/rockchip/rk3588-base.dtsi"
-wget -q ${dts_url} -O "/tmp/rk3588-base.dtsi"
-du -h "/tmp/rk3588-base.dtsi"
-find "$(pwd)/build_dir" -type f -name "*rk3588-base.dtsi*" -exec cp "/tmp/rk3588-base.dtsi" {} \;
-find "$(pwd)/build_dir" -type f -name "*rk3588-base.dtsi*" -exec du -h {} \;
-
 wget -q ${Script_url}/Packages_Download.sh -O "/bin/Packages_Download" && chmod 755 "/bin/Packages_Download"
 wget -q ${Script_url}/Replace.sh -O "/bin/Replace" && chmod 755 "/bin/Replace"
 wget -q ${Script_url}/Packages_Default.sh -O "$(pwd)/def_pkg.env" && source "$(pwd)/def_pkg.env"
@@ -43,7 +37,6 @@ fi
 echo "============================= 镜像信息 ============================="
 echo "路由器型号: $PROFILE"
 echo "固件大小: $ROOTFS_PARTSIZE"
-
 #========== 创建自定义配置文件 ==========# 
 mkdir -p "$(pwd)/files/etc/config"
 cat << EOF > "$(pwd)/files/etc/config/diy-settings"
@@ -95,7 +88,6 @@ if $INCLUDE_DOCKER; then
 echo "$(date '+%Y-%m-%d %H:%M:%S') - 添加docker插件..." 
 PACKAGES="$PACKAGES docker dockerd docker-compose luci-i18n-dockerman-zh-cn"
 fi
-
 #=============== 开始打包镜像 ===============#
 echo "============================= 默认插件 ============================="
 echo "$(date '+%Y-%m-%d %H:%M:%S') - 默认插件包："
@@ -114,7 +106,7 @@ echo "========== kmods版本 =========="
 wget -qO- ${Script_url}/Kmods.sh | bash
 echo "============================= 打包镜像 ============================="
 cp -f "$(pwd)/repositories.conf" "$(pwd)/bin/repositories.conf"
-make image PROFILE=$PROFILE REBUILD_DTB=1 PACKAGES="$PACKAGES" FILES="$(pwd)/files" ROOTFS_PARTSIZE=$ROOTFS_PARTSIZE
+make image PROFILE=$PROFILE PACKAGES="$PACKAGES" FILES="$(pwd)/files" ROOTFS_PARTSIZE=$ROOTFS_PARTSIZE
 echo "============================= 构建结果 ============================="
 if [ $? -ne 0 ]; then
     echo "$(date '+%Y-%m-%d %H:%M:%S') - 打包镜像失败!"
