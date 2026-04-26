@@ -122,6 +122,6 @@ https://github.com/user/repo/releases/download/v1.0/luci-i18n-example-zh-cn_1.0_
 </details>
 
 # 鸣谢
-- https://github.com/openwrt
-- https://github.com/immortalwrt
-- https://github.com/ophub/amlogic-s9xxx-openwrt
+- [openwrt](https://github.com/openwrt/openwrt)
+- [immortalwrt](https://github.com/immortalwrt/immortalwrt)
+- [amlogic-s9xxx-openwrt](https://github.com/ophub/amlogic-s9xxx-openwrt)
