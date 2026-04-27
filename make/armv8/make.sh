@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "$(ARCH)"
+echo "$(uname -m)"
 echo "============================= 下载Script ============================="
 Script_url="https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/.github/script"
 wget -q ${Script_url}/Packages_Download.sh -O "/bin/Packages_Download" && chmod 755 "/bin/Packages_Download"
@@ -121,4 +121,4 @@ if [[ -n "$(find "$(pwd)/bin/targets/" -type f -name "*.img.gz")" ]]; then
 else
     echo "$(date '+%Y-%m-%d %H:%M:%S') - 打包镜像文件失败!"
     echo "building=failure" >> "$(pwd)/bin/.bashrc"
-fi 
+fi
