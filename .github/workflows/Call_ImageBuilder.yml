@@ -21,12 +21,7 @@ on:
         type: string
       pppoe_password:
         type: string
-      diy_package:
-        type: string
-      diy_script:
-        type: string
-      diy_download:
-        type: string
+
 env:
   UPLOAD_BIN_DIR: false
   PATH_CACHE: /tmp/.cache
@@ -60,39 +55,7 @@ jobs:
           echo "IMAGE=${IMAGE}" >> $GITHUB_ENV
           echo "CACHE_IMAGE=imagebuilder:${image}-${{ inputs.version }}.tar" >> $GITHUB_ENV
           echo "CACHE_KEY=${{ inputs.branch }}-${IMAGE}-$(echo "${IMAGE}" | md5sum | awk '{print $1}')" >> $GITHUB_ENV
-      
-      - name: Download Config Data
-        env:
-          regexper: '^(https?)://[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,}(:[0-9]{1,5})?(/[^/]*)*$'
-        run: |
-          # 下载配置数据
-          test -d "$(pwd)/diy_config" || mkdir -p "$(pwd)/diy_config"
-          if grep -qE "$regexper" <<< "${{ inputs.diy_package }}"; then
-            wget -q ${{ inputs.diy_package }} -O "$(pwd)/diy_config/diy_pkg.env"
-          else
-            [[ "${{ inputs.diy_package }}" != "all" ]] && \
-            cp -f ${{ inputs.diy_package }} "$(pwd)/diy_config/diy_pkg.env"
-          fi
-          if grep -qE "$regexper" <<< "${{ inputs.diy_script }}"; then
-            wget -q ${{ inputs.diy_script }} -O "$(pwd)/diy_config/defaults.sh"
-          else
-            [[ "${{ inputs.diy_script }}" != "all" ]] && \
-            cp -f ${{ inputs.diy_script }} "$(pwd)/diy_config/defaults.sh"
-          fi
-          if grep -qE "$regexper" <<< "${{ inputs.diy_download }}"; then
-            wget -q ${{ inputs.diy_download }} -O "$(pwd)/diy_config/url"
-          else
-            [[ "${{ inputs.diy_download }}" != "all" ]] && \
-            cp -f ${{ inputs.diy_download }} "$(pwd)/diy_config/url"
-          fi
-          ls "$(pwd)/diy_config"
-         
-      - name: Enable Cache
-        uses: actions/cache@main
-        with:
-          path: ${{ env.PATH_CACHE }}
-          key: ${{ env.CACHE_KEY }}
-          
+
       - name: Configure environment variables
         env:
           device: ${{ inputs.device }}
@@ -100,11 +63,27 @@ jobs:
           # 初始化数据变量
           sudo timedatectl set-timezone "Asia/Shanghai"
           echo "time=$(date "+%Y.%m.%d-%H%M%S")" >> $GITHUB_ENV
-          echo "profile=${device#*_}" >> $GITHUB_ENV
+          board=${device#*_}
+          [ -z "${board}" ] && board=${device}
+          echo "profile=${board}" >> $GITHUB_ENV
           [[ "${device}" =~ "armv8"  ]] && echo "arch=armv8" >> $GITHUB_ENV
           [[ "${device}" =~ "x86-64"  ]] && echo "arch=x86-64" >> $GITHUB_ENV
           echo "device=$(echo ${device%_*} | sed 's/-openwrt//' | sed 's/-armv8//')" >> $GITHUB_ENV
-     
+      
+      - name: Download Config Data
+        run: |
+          # 下载配置数据
+          test -d "$(pwd)/diy_config" || mkdir -p "$(pwd)/diy_config"
+          [ -f "diy_env/${{ env.profile }}.env" ] && \
+          cp -f "diy_env/${{ env.profile }}.env" "$(pwd)/diy_config/diy_pkg.env"
+          [ -f "diy_files/${{ env.profile }}.sh" ] && \
+          cp -f "diy_files/${{ env.profile }}.sh" "$(pwd)/diy_config/defaults.sh"
+          # 下载自定义包
+          source "diy_env/${{ env.profile }}.env"
+          [ -f "diy_download/${Model}.txt" ] && \
+          cp -f "diy_download/${Model}.txt" "$(pwd)/diy_config/url.txt"
+          ls "$(pwd)/diy_config"
+
       - name: Create Edit info
         run: |
           # 创建发布文档
@@ -118,7 +97,13 @@ jobs:
           if [[ "${{ inputs.docker }}" == "true" ]]; then
             echo "* 添加\`docker\`版本" >> info.md
           fi
-          
+ 
+      - name: Enable Cache
+        uses: actions/cache@main
+        with:
+          path: ${{ env.PATH_CACHE }}
+          key: ${{ env.CACHE_KEY }}
+        
       - name: Set executable permissions
         env: 
           URL: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/make/"

@@ -60,39 +60,6 @@ on:
         options:
           - "10.10.10.254"
           - "192.168.100.1"
-          
-      diy_package:
-        description: |
-          设置Diy插件文件或网址
-        required: true
-        default: 'diy_env/nanopi-r6s.env'
-        type: choice
-        options:
-          - "diy_env/nanopi-r6s.env"
-          - "diy_env/orangepi-5plus.env"
-          - "diy_env/x86-64.env"
-
-      diy_script:
-        description: |
-          设置初始化脚本文件或网址
-        required: true
-        default: 'diy_env/nanopi-r6s.env'
-        type: choice
-        options:
-          - "diy_files/nanopi-r6s.sh"
-          - "diy_files/orangepi-5plus.sh"
-          - "diy_files/x86-64.sh"
-      
-      diy_download:
-        description: |
-          下载自定义插件
-        required: true
-        default: 'all'
-        type: choice
-        options:
-          - "all"
-          - "diy_download/aarch64.txt"
-          - "diy_download/x86-64.txt"
         
       docker:
         description: |
@@ -133,7 +100,4 @@ jobs:
       enable_pppoe: ${{ inputs.enable_pppoe }}
       pppoe_account: ${{ inputs.pppoe_account }}
       pppoe_password: ${{ inputs.pppoe_password }}
-      diy_package: ${{ inputs.diy_package }}
-      diy_script: ${{ inputs.diy_script }}
-      diy_download: ${{ inputs.diy_download }}
       
