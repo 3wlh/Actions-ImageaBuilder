@@ -39,7 +39,6 @@ uci -q delete dhcp.lan.ndp
 # 默认设置WAN口防火墙打开
 uci set firewall.@zone[1].input='ACCEPT'
 
-
-uci set scriptrun.@general[0].script_url="http://3wlh.github.io/Script/OpenWrt/Config_sh/R6S.sh"
+uci set scriptrun.@general[0].script_url="http://3wlh.github.io/Script/OpenWrt/Config_sh/x86.sh"
 uci commit
 exit 0
