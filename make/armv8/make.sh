@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "============================= 下载Script ============================="
 Script_url="https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/.github/script"
-wget -q ${Script_url}/Diy_Download.sh -O "/bin/Diy_Download" && chmod 755 "/bin/Packages_Download"
+wget -q ${Script_url}/Diy_Download.sh -O "/bin/Diy_Download" && chmod 755 "/bin/Diy_Download"
 wget -q ${Script_url}/Replace.sh -O "/bin/Replace" && chmod 755 "/bin/Replace"
 wget -q ${Script_url}/Default_Packages.sh -O "$(pwd)/def_pkg.env" && source "$(pwd)/def_pkg.env"
 [[ -f "$(pwd)/diy_config/diy_pkg.env" ]] && source "$(pwd)/diy_config/diy_pkg.env"
