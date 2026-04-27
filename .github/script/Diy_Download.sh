@@ -13,13 +13,13 @@ function download(){
 
 function handle(){
 	cat "${1}" 2>/dev/null | \
-	while IFS= read -r LINE || [ -n "$LINE" ]; do
-		[[ -z "${LINE// /}" ]] && continue
-		LINE="${LINE%$'\r'}"
-		if grep -qE "$regexper" <<< "${LINE}"; then
-			echo "Downloading ${LINE}"
-			[[ $(curl -o /dev/null -s --head -w "%{http_code}" "${LINE}") -ge 400 ]] && { echo "无法访问"; return; }
-			download "${LINE}"
+	while IFS= read -r url || [ -n "$url" ]; do
+		[[ -z "${url// /}" ]] && continue
+		url="${url%$'\r'}"
+		if grep -qE "$regexper" <<< "${url}"; then
+			echo "Downloading ${url}"
+			[[ $(curl -o /dev/null -s --head -w "%{http_code}" "${url}") -ge 400 ]] && { echo "无法访问"; return; }
+			download "${url}"
 		fi
 	done
 }
