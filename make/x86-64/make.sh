@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "============================= 初始化 ============================="
 Script_url="https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/.github/script"
-wget -q ${Script_url}/Diy_Download.sh -O "/bin/Diy_Download" && chmod 755 "/bin/Packages_Download"
+wget -q ${Script_url}/Diy_Download.sh -O "/bin/Diy_Download" && chmod 755 "/bin/Diy_Download"
 wget -q ${Script_url}/Replace.sh -O "/bin/Replace" && chmod 755 "/bin/Replace"
 wget -q ${Script_url}/Default_Packages.sh -O "$(pwd)/def_pkg.env" && source "$(pwd)/def_pkg.env"
 [[ -f "$(pwd)/diy_config/diy_pkg.env" ]] && source "$(pwd)/diy_config/diy_pkg.env"
@@ -16,7 +16,7 @@ cp -f "$(pwd)/diy_config/defaults.sh" "$(pwd)/files/etc/uci-defaults/99-defaults
 echo "==============================下载插件=============================="
 [[ -d "$(pwd)/packages/diy_packages" ]] || mkdir -p "$(pwd)/packages/diy_packages"
 echo "Download_Path: $(pwd)/packages/diy_packages"
-[[ -f "$(pwd)/diy_config/url" ]] && { echo "开始下载：";Packages_Download "$(pwd)/diy_config/url" "$(pwd)/packages/diy_packages"; }
+[[ -f "$(pwd)/diy_config/url.txt" ]] && { echo "开始下载：";Diy_Download "$(pwd)/diy_config/url.txt" "$(pwd)/packages/diy_packages"; }
 # 添加签名
 echo -e "untrusted comment: public key 29026b52f8ff825c\nRWQpAmtS+P+CXP4/60amOLDZs7jqKfTrFlKt5+UHYTU0ED9pRmh73vz7" >\
 "$(pwd)/keys/29026b52f8ff825c" && cp -f "$(pwd)/keys/29026b52f8ff825c" "$(pwd)/files/etc/opkg/keys/"
