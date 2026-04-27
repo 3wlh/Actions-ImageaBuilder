@@ -28,7 +28,7 @@ on:
         description: |
           选择 OpenWrt 版本
         required: true
-        default: "24.10.5"
+        default: "24.10.6"
         type: choice
         options:
           - "24.10-SNAPSHOT"
