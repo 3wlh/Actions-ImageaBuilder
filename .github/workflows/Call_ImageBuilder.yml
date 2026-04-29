@@ -81,7 +81,6 @@ jobs:
           [ -f "diy_files/${name}.sh" ] && \
           cp -f "diy_files/${name}.sh" "$(pwd)/diy_config/defaults.sh"
           # 下载自定义包
-          source "diy_env/${name}.env"
           [ -f "diy_download/${name}.txt" ] && \
           cp -f "diy_download/${name}.txt" "$(pwd)/diy_config/url.txt"
           ls -lhS "$(pwd)/diy_config/" | awk '{print $9,$5}'
