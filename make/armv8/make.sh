@@ -5,13 +5,6 @@ wget -q ${Script_url}/Download.sh -O "/bin/Download" && chmod 755 "/bin/Download
 wget -q ${Script_url}/Replace.sh -O "/bin/Replace" && chmod 755 "/bin/Replace"
 wget -q ${Script_url}/Default_Packages.sh -O "$(pwd)/def_pkg.env" && source "$(pwd)/def_pkg.env"
 find . -maxdepth 1 -type f -name "repositories.conf" -exec cp {} "$(pwd)/packages/" \;
-echo "============================= 初始化自定义配置 ============================="
-[[ -z "${PROFILE}" ]] && { echo "获取编译设备配置失败！";exit 1; }
-export Model="${Model}"
-[[ -d "$(pwd)/files/etc/opkg/keys" ]] || mkdir -p "$(pwd)/files/etc/opkg/keys"
-wget -qO- ${Script_url}/Diy_file_all.sh | bash
-[[ -f "$(pwd)/diy_config/defaults.sh" ]] && \
-cp -f "$(pwd)/diy_config/defaults.sh" "$(pwd)/files/etc/uci-defaults/99-defaults1.sh"
 echo "============================= 初始化自定义插件 ============================="
 # 添加签名和插件源
 echo -e "untrusted comment: public key 29026b52f8ff825c\nRWQpAmtS+P+CXP4/60amOLDZs7jqKfTrFlKt5+UHYTU0ED9pRmh73vz7" >\
@@ -19,6 +12,15 @@ echo -e "untrusted comment: public key 29026b52f8ff825c\nRWQpAmtS+P+CXP4/60amOLD
 sed -i '1a src/gz 3wlh https://packages.11121314.xyz/packages/aarch64_generic' "repositories.conf"
 [[ -d "$(pwd)/packages/diy_packages" ]] || mkdir -p "$(pwd)/packages/diy_packages"
 [[ -f "$(pwd)/diy_config/diy_pkg.env" ]] && source "$(pwd)/diy_config/diy_pkg.env"
+echo "=========================== 查看自定义插件 ==========================="
+ls -lhS "$(pwd)/packages/diy_packages/" | awk '{print $9,$5}'
+echo "============================= 初始化自定义配置 ============================="
+[[ -z "${PROFILE}" ]] && { echo "获取编译设备配置失败！";exit 1; }
+export Model="${Model}"
+[[ -d "$(pwd)/files/etc/opkg/keys" ]] || mkdir -p "$(pwd)/files/etc/opkg/keys"
+wget -qO- ${Script_url}/Diy_file_all.sh | bash
+[[ -f "$(pwd)/diy_config/defaults.sh" ]] && \
+cp -f "$(pwd)/diy_config/defaults.sh" "$(pwd)/files/etc/uci-defaults/99-defaults1.sh"
 echo "=========================== 查看下载插件 ==========================="
 ls -lhS "$(pwd)/packages/diy_packages/" | awk '{print $9,$5}'
 echo "=========================== 查看下载插件 ==========================="
