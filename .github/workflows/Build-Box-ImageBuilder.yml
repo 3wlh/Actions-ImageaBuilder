@@ -147,16 +147,12 @@ jobs:
           name: "armsr_${{ inputs.openwrt_board }}"
         run: |
           # 下载配置数据
-          test -d "$(pwd)/diy_config" || mkdir -p "$(pwd)/diy_config"
-          [ -f "diy_env/${name}.env" ] && \
-          cp -f "diy_env/${name}.env" "$(pwd)/diy_config/diy_pkg.env"
-          [ -f "diy_files/${name}.sh" ] && \
-          cp -f "diy_files/${name}.sh" "$(pwd)/diy_config/defaults.sh"
-          # 下载自定义包
-          # source "diy_env/armsr_${device}.env"
-          [ -f "diy_download/${name}.txt" ] && \
-          cp -f "diy_download/${name}.txt" "$(pwd)/diy_config/url.txt"
-          ls -lhS "$(pwd)/diy_config/" | awk '{print $9,$5}'
+          test -d "$(pwd)/.config" || mkdir -p "$(pwd)/.config"
+          [ -f "diy_config/${name}.env" ] && \
+          cp -f "diy_config/${name}.env" "$(pwd)/.config/diy_pkg.env"
+          [ -f "diy_script/${name}.sh" ] && \
+          cp -f "diy_script/${name}.sh" "$(pwd)/.config/defaults.sh"
+          ls -lhS "$(pwd)/.config/" | awk '{print $9,$5}'
               
       - name: Enable Cache
         uses: actions/cache@main
@@ -228,7 +224,7 @@ jobs:
             -v "${{ env.PATH_CACHE }}/dl:${{ env.builder }}/dl" \
             -v "${{ env.PATH_CACHE }}/packages:${{ env.builder }}/packages" \
             -v "${{ github.workspace }}/armsr-armv8/bin:${{ env.builder }}/bin" \
-            -v "${{ github.workspace }}/diy_config:${{ env.builder }}/diy_config" \
+            -v "${{ github.workspace }}/.config:${{ env.builder }}/diy_config" \
             -v "${{ github.workspace }}/make.sh:${{ env.builder }}/make.sh" \
             ${{ inputs.branch }}/imagebuilder:${{ env.IMAGE }} /bin/bash ${{ env.builder }}/make.sh
           cat "${{ github.workspace }}/armsr-armv8/bin/.bashrc" 2>/dev/null >> $GITHUB_OUTPUT
