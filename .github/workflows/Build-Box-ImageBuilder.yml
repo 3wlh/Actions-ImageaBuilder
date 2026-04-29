@@ -142,6 +142,11 @@ jobs:
           echo "IMAGE=${IMAGE}" >> $GITHUB_ENV
           echo "CACHE_KEY=${{ inputs.branch }}-${IMAGE}-$(echo "${IMAGE}" | md5sum | awk '{print $1}')" >> $GITHUB_ENV
       
+      - name: Configure environment variables
+        run: |
+          sudo timedatectl set-timezone "Asia/Shanghai"
+          echo "time=$(date "+%Y.%m.%d-%H%M%S")" >> $GITHUB_ENV
+      
       - name: Download Config Data
         env: 
           name: "armsr_${{ inputs.openwrt_board }}"
@@ -153,18 +158,7 @@ jobs:
           [ -f "diy_script/${name}.sh" ] && \
           cp -f "diy_script/${name}.sh" "$(pwd)/.config/defaults.sh"
           ls -lhS "$(pwd)/.config/" | awk '{print $9,$5}'
-              
-      - name: Enable Cache
-        uses: actions/cache@main
-        with:
-          path: ${{ env.PATH_CACHE }}
-          key: ${{ env.CACHE_KEY }}
-          
-      - name: Configure environment variables
-        run: |
-          sudo timedatectl set-timezone "Asia/Shanghai"
-          echo "time=$(date "+%Y.%m.%d-%H%M%S")" >> $GITHUB_ENV
-             
+       
       - name: Create Edit info
         run: |
           echo "## 编译时间：\`${{ env.time }}\`" > info.md
@@ -177,6 +171,12 @@ jobs:
           if [[ "${{ inputs.docker }}" == "true" ]]; then
             echo "* 添加\`docker\`版本" >> info.md
           fi
+          
+      - name: Enable Cache
+        uses: actions/cache@main
+        with:
+          path: ${{ env.PATH_CACHE }}
+          key: ${{ env.CACHE_KEY }}
           
       - name: Set executable permissions
         env: 
