@@ -21,10 +21,8 @@ echo "Download_Path: $(pwd)/packages/diy_packages"
 echo -e "untrusted comment: public key 29026b52f8ff825c\nRWQpAmtS+P+CXP4/60amOLDZs7jqKfTrFlKt5+UHYTU0ED9pRmh73vz7" >\
 "$(pwd)/keys/29026b52f8ff825c" && cp -f "$(pwd)/keys/29026b52f8ff825c" "$(pwd)/files/etc/opkg/keys/"
 sed -i '1a src/gz 3wlh https://packages.11121314.xyz/packages/aarch64_generic' "repositories.conf"
-
 echo "=========================== 查看下载插件 ==========================="
-ls $(pwd)/packages/diy_packages
-
+ls -lhS "$(pwd)/packages/diy_packages/" | awk '{print $5,$9}'
 echo "============================= 检查缓存 ============================="
 if [[ $(find "$(pwd)/dl" -type f 2>/dev/null | wc -l) -gt 0 ]]; then
     echo "$(date '+%Y-%m-%d %H:%M:%S') - 正在检查缓存插件："
@@ -101,7 +99,7 @@ Replace "CONFIG_TARGET_IMAGES_GZIP"
 cp -f "$(pwd)/.config" "$(pwd)/bin/buildinfo.config"
 #========== kmods版本 ==========#
 echo "========== kmods版本 =========="
-Kmods
+wget -qO- ${Script_url}/Kmods.sh | bash
 echo "============================= 打包镜像 ============================="
 cp -f "$(pwd)/repositories.conf" "$(pwd)/bin/repositories.conf"
 make image PROFILE="generic" PACKAGES="$PACKAGES" FILES="$(pwd)/files" ROOTFS_PARTSIZE=$ROOTFS_PARTSIZE
