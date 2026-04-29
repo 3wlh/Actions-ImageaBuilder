@@ -155,7 +155,7 @@ jobs:
           # source "diy_env/armsr_${device}.env"
           [ -f "diy_download/${name}.txt" ] && \
           cp -f "diy_download/${name}.txt" "$(pwd)/diy_config/url.txt"
-          ls "$(pwd)/diy_config"
+          ls -lhS "$(pwd)/diy_config/" | awk '{print $5,$9}'
               
       - name: Enable Cache
         uses: actions/cache@main
