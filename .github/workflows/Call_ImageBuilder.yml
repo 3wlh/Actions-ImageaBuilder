@@ -76,7 +76,7 @@ jobs:
         run: |
           # 下载配置数据
           source "diy_env/${name}.env"
-          du -h "$(pwd)/files/openclash/core/"
+          ls -lhS "$(pwd)/files/openclash/core/" | awk '{print $5,$9}' 
           exit  1
           test -d "$(pwd)/diy_config" || mkdir -p "$(pwd)/diy_config"
           [ -f "diy_env/${name}.env" ] && \
