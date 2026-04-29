@@ -114,4 +114,4 @@ if [[ -f "$(find "$(pwd)/bin/targets/" -type f -name "*.tar.gz")" ]]; then
 else
     echo "$(date '+%Y-%m-%d %H:%M:%S') - 打包镜像文件失败!"
     echo "building=fail" >> "$(pwd)/bin/.bashrc"
-fi 
+fi
