@@ -17,8 +17,8 @@
 │       ├── Build-ImageBuilder.yml # 主要构建工作流
 │       └── Call_ImageBuilder.yml
 ├── diy_download/                  # 自定义插件下载链接
-│   ├── {设备名称}.txt              # 设备名称.txt
-│   └── OECT.txt                   # 如：OECT.txt，其他设备插件链接
+│   ├── {设备名称}.txt              # 编译设备名称.txt
+│   └── armsr_wxy-oect.txt         # 如：armsr_wxy-oect.txt
 ├── diy_env/                       # 设备环境配置
 │   ├── default_packages.sh        # 默认软件包列表设
 │   ├── x86-64.env                 # x86_64 设备配置
