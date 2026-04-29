@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "============================= 初始化 ============================="
+echo "============================= 初始化脚本 ============================="
 Script_url="https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/.github/script"
 wget -q ${Script_url}/Download.sh -O "/bin/Download" && chmod 755 "/bin/Download"
 wget -q ${Script_url}/Replace.sh -O "/bin/Replace" && chmod 755 "/bin/Replace"
