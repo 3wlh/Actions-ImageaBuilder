@@ -84,7 +84,7 @@ jobs:
           source "diy_env/${name}.env"
           [ -f "diy_download/${name}.txt" ] && \
           cp -f "diy_download/${name}.txt" "$(pwd)/diy_config/url.txt"
-          ls -lhS "$(pwd)/diy_config/" | awk '{print $5,$9}'
+          ls -lhS "$(pwd)/diy_config/" | awk '{print $9,$5}'
 
       - name: Create Edit info
         run: |
