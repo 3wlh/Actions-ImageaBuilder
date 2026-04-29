@@ -8,7 +8,7 @@
 │   ├── script/                    # 构建脚本目录
 │   │   ├── Default_Packages.sh    # 默认软件包配置
 │   │   ├── Diy_file_all.sh        # 下载通用配置文件
-│   │   ├── Diy_Download.sh        # 下载自定义插件
+│   │   ├── Download.sh            # 下载自定义插件
 │   │   ├── Kmods.sh               # 内核模块处理
 │   │   ├── Packages_Check.sh      # 检查缓存插件
 │   │   └── Replace.sh             # 文件替换脚本
@@ -16,27 +16,23 @@
 │       ├── Build-Box-ImageBuilder.yml
 │       ├── Build-ImageBuilder.yml # 主要构建工作流
 │       └── Call_ImageBuilder.yml
-├── diy_download/                  # 自定义插件下载链接
-│   ├── {设备名称}.txt              # 编译设备名称.txt
-│   └── armsr_wxy-oect.txt         # 如：armsr_wxy-oect.txt
-├── diy_env/                       # 设备环境配置
-│   ├── default_packages.sh        # 默认软件包列表设
+├── diy_config/                    # 自定义配置
 │   ├── x86-64.env                 # x86_64 设备配置
 │   ├── nanopi-r6s.env             # NanoPi R6S 配置
 │   ├── orangepi-5plus.env         # OrangePi 5 Plus 配置
 │   ├── armsr_orangepi-5-plus.env  # ARM 设备配置
 │   └── armsr_wxy-oect.env         # 其他设备配置
-├── diy_files/                     # 设备初始化脚本
-│   ├── all/                       # 所有设备通用脚本
-│   │   ├── 99-defaults.sh         # 首次启动默认配置
-│   │   ├── 29_ports.js            # 端口状态显示
-│   │   ├── sys-bash.sh            # Bash 配置
-│   │   ├── sys-opkg.sh            # Opkg 配置
-│   │   └── sys-sysinfo.sh         # 系统信息显示
+├── diy_script/                    # 设备初始化脚本
 │   ├── x86-64.sh                  # x86_64 设备初始化
 │   ├── nanopi-r6s.sh              # NanoPi R6S 初始化
 │   ├── orangepi-5plus.sh          # OrangePi 5 Plus 初始化
-│   └── wxy-oect.sh                # 其他设备初始化
+│   └── armsr_wxy-oect.sh          # 其他设备初始化
+├── files/
+│   ├── 99-defaults.sh             # 首次启动默认配置
+│   ├── 29_ports.js                # 端口状态显示
+│   ├── sys-bash.sh                # Bash 配置
+│   ├── sys-opkg.sh                # Opkg 配置
+│   └── sys-sysinfo.sh             # 系统信息显示
 ├── make/                          # 构建执行脚本
 │   ├── x86-64/make.sh
 │   ├── armv8/make.sh
@@ -66,6 +62,8 @@ DIY_PACKAGES=""
 DIY_PACKAGES="$DIY_PACKAGES luci-app-scriptrun luci-app-mddns"
 DIY_PACKAGES="$DIY_PACKAGES luci-i18n-argon-config-zh-cn"
 DIY_PACKAGES="$DIY_PACKAGES luci-app-v2ray-server xray-core"
+# 下载自定义插件
+# Download "{下载自定义插件网址}"
 ```
 
 **配置项说明：**
