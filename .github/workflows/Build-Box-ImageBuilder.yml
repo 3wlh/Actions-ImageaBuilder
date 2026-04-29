@@ -143,18 +143,18 @@ jobs:
       
       - name: Download Config Data
         env: 
-          device: ${{ inputs.openwrt_board }}
+          name: "armsr_${{ inputs.openwrt_board }}"
         run: |
           # 下载配置数据
           test -d "$(pwd)/diy_config" || mkdir -p "$(pwd)/diy_config"
-          [ -f "diy_env/armsr_${device}.env" ] && \
-          cp -f "diy_env/armsr_${device}.env" "$(pwd)/diy_config/diy_pkg.env"
-          [ -f "diy_files/armsr_${device}.sh" ] && \
-          cp -f "diy_files/armsr_${device}.sh" "$(pwd)/diy_config/defaults.sh"
+          [ -f "diy_env/${name}.env" ] && \
+          cp -f "diy_env/${name}.env" "$(pwd)/diy_config/diy_pkg.env"
+          [ -f "diy_files/${name}.sh" ] && \
+          cp -f "diy_files/${name}.sh" "$(pwd)/diy_config/defaults.sh"
           # 下载自定义包
-          source "diy_env/armsr_${device}.env"
-          [ -f "diy_download/${Model}.txt" ] && \
-          cp -f "diy_download/${Model}.txt" "$(pwd)/diy_config/url.txt"
+          # source "diy_env/armsr_${device}.env"
+          [ -f "diy_download/${name}.txt" ] && \
+          cp -f "diy_download/${name}.txt" "$(pwd)/diy_config/url.txt"
           ls "$(pwd)/diy_config"
               
       - name: Enable Cache
