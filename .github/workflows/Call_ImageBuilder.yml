@@ -75,6 +75,9 @@ jobs:
           name: ${{ env.profile }}
         run: |
           # 下载配置数据
+          source "diy_env/${name}.env"
+          ls "$(pwd)/files/openclash/core/"
+          exit  1
           test -d "$(pwd)/diy_config" || mkdir -p "$(pwd)/diy_config"
           [ -f "diy_env/${name}.env" ] && \
           cp -f "diy_env/${name}.env" "$(pwd)/diy_config/diy_pkg.env"
@@ -84,7 +87,7 @@ jobs:
           source "diy_env/${name}.env"
           [ -f "diy_download/${name}.txt" ] && \
           cp -f "diy_download/${name}.txt" "$(pwd)/diy_config/url.txt"
-          ls "$(pwd)/diy_config"
+          
 
       - name: Create Edit info
         run: |
