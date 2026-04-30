@@ -10,18 +10,18 @@ echo "============================= 初始化自定义插件 ===================
 key="untrusted comment: public key 29026b52f8ff825c\nRWQpAmtS+P+CXP4/60amOLDZs7jqKfTrFlKt5+UHYTU0ED9pRmh73vz7"
 echo -e "${key}" > "$(pwd)/keys/29026b52f8ff825c" 
 sed -i '1a src/gz 3wlh https://packages.11121314.xyz/packages/aarch64_generic' "repositories.conf"
-[[ -d "$(pwd)/packages/diy_packages" ]] || mkdir -p "$(pwd)/packages/diy_packages"
-[[ -f "$(pwd)/diy_config/diy_pkg.env" ]] && source "$(pwd)/diy_config/diy_pkg.env"
+[ -d "$(pwd)/packages/diy_packages" ] || mkdir -p "$(pwd)/packages/diy_packages"
+[ -f "$(pwd)/diy_config/diy_pkg.env" ] && source "$(pwd)/diy_config/diy_pkg.env"
 echo "=========================== 查看自定义插件 ==========================="
 ls -lhS "$(pwd)/packages/diy_packages/" | awk '{print $9,$5}'
 echo "============================= 初始化自定义配置 ============================="
-[ -n "${PROFILES}" ] && PROFILE="${PROFILE}"
-[[ -z "${PROFILE}" ]] && { echo "获取编译设备配置失败！";exit 1; }
+[ -z "${PROFILE}" ] && PROFILE="${PROFILES}"
+[ -z "${PROFILE}" ] && { echo "获取编译设备配置失败！";exit 1; }
 export Model="${Model}"
-[[ -d "$(pwd)/files/etc/opkg/keys" ]] || mkdir -p "$(pwd)/files/etc/opkg/keys"
+[ -d "$(pwd)/files/etc/opkg/keys" ] || mkdir -p "$(pwd)/files/etc/opkg/keys"
 cp -f "$(pwd)/keys/29026b52f8ff825c" "$(pwd)/files/etc/opkg/keys/"
 wget -qO- ${Script_url}/Diy_file_all.sh | bash
-[[ -f "$(pwd)/diy_config/defaults.sh" ]] && \
+[ -f "$(pwd)/diy_config/defaults.sh" ] && \
 cp -f "$(pwd)/diy_config/defaults.sh" "$(pwd)/files/etc/uci-defaults/99-defaults1.sh"
 echo "============================= 检查缓存 ============================="
 if [[ $(find "$(pwd)/dl" -type f 2>/dev/null | wc -l) -gt 0 ]]; then
@@ -52,11 +52,11 @@ echo "$(date '+%Y-%m-%d %H:%M:%S') - 系统Version: ${VERSION} ..."
 PACKAGES=""
 #========== 删除插件包 ==========#
 PACKAGES="$PACKAGES -luci-app-cpufreq"
-if [[ "${BRANCH}" == "openwrt" ]]; then
+if [ "${BRANCH}" == "openwrt" ]; then
 PACKAGES="$PACKAGES -dnsmasq"
 fi
 #========== 添加内核驱动 ==========#
-if [[ "${BRANCH}" == "immortalwrt" ]]; then
+if [ "${BRANCH}" == "immortalwrt" ]; then
 echo "$(date '+%Y-%m-%d %H:%M:%S') - 添加${BRANCH}内核模块..."
 PACKAGES="$PACKAGES luci-i18n-ramfree-zh-cn"
 PACKAGES="$PACKAGES kmod-drm-gem-shmem-helper kmod-drm-dma-helper"
@@ -66,7 +66,7 @@ echo "$(date '+%Y-%m-%d %H:%M:%S') - 添加${BRANCH}内核模块..."
 PACKAGES="$PACKAGES kmod-drm-dma-helper"
 PACKAGES="$PACKAGES luci-lib-ipkg"
 fi
-if [[ "$(echo ${VERSION} |  cut -d '.' -f 1 )" -ge "24" ]]; then
+if [ "$(echo ${VERSION} |  cut -d '.' -f 1 )" -ge "24" ]; then
 PACKAGES="$PACKAGES luci-i18n-package-manager-zh-cn"
 else
 PACKAGES="$PACKAGES luci-i18n-opkg-zh-cn"
@@ -111,7 +111,7 @@ if [ $? -ne 0 ]; then
     echo "$(date '+%Y-%m-%d %H:%M:%S') - 打包镜像失败!"
     echo "building=fail" >> "$(pwd)/bin/.bashrc"
 fi
-if [[ -n "$(find "$(pwd)/bin/targets/" -type f -name "*.img.gz")" ]]; then
+if [ -n "$(find "$(pwd)/bin/targets/" -type f -name "*.img.gz")" ]; then
     echo "$(date '+%Y-%m-%d %H:%M:%S') - 打包镜像完成."
     echo "building=success" >> "$(pwd)/bin/.bashrc"
 else
