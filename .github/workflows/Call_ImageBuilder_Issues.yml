@@ -1,0 +1,210 @@
+name: Call ImageBuilder Issues
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        type: string
+      device:
+        type: string
+      version:
+        type: string
+      rootfs_partsize:
+        type: string
+      network_lan:
+        type: string
+      docker:
+        type: boolean
+      enable_pppoe:
+        type: boolean
+      pppoe_account:
+        type: string
+      pppoe_password:
+        type: string
+      packages:
+        type: string
+      script:
+        type: string
+env:
+  UPLOAD_BIN_DIR: false
+  PATH_CACHE: /tmp/.cache
+  
+
+jobs:
+  Build:
+    name: Build ${{ inputs.branch }}-${{ inputs.version }}
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Configure docker image
+        env:
+          image: ${{ inputs.image }}
+        run: |
+          # 配置Docker镜像数据
+          if [[ "${{ inputs.version }}" =~ "SNAPSHOT" || "${{ inputs.branch }}" == "openwrt" ]]; then
+            IMAGE=${image}-${{ inputs.version }}
+          else
+            IMAGE=${image}-openwrt-${{ inputs.version }}
+          fi
+          if [[ "${{ inputs.branch }}" == "openwrt" ]]; then
+            echo "builder=/builder" >> $GITHUB_ENV
+          else
+            echo "builder=/home/build/immortalwrt" >> $GITHUB_ENV
+          fi
+          echo "IMAGE=${IMAGE}" >> $GITHUB_ENV
+          echo "CACHE_IMAGE=imagebuilder:${image}-${{ inputs.version }}.tar" >> $GITHUB_ENV
+          echo "CACHE_KEY=${{ inputs.branch }}-${IMAGE}-$(echo "${IMAGE}" | md5sum | awk '{print $1}')" >> $GITHUB_ENV
+
+      - name: Configure environment variables
+        env:
+          device: ${{ inputs.device }}
+        run: |
+          # 初始化数据变量
+          sudo timedatectl set-timezone "Asia/Shanghai"
+          echo "time=$(date "+%Y.%m.%d-%H%M%S")" >> $GITHUB_ENV
+          board=${device#*_}
+          [ -z "${board}" ] && board=${device}
+          echo "profile=${board}" >> $GITHUB_ENV
+          [[ "${device}" =~ "armv8"  ]] && echo "arch=armv8" >> $GITHUB_ENV
+          [[ "${device}" =~ "x86-64"  ]] && echo "arch=x86-64" >> $GITHUB_ENV
+          echo "device=$(echo ${device%_*} | sed 's/-openwrt//' | sed 's/-armv8//')" >> $GITHUB_ENV
+      
+      - name: Download Config Data
+        env:
+          regexper: '^(https?)://[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,}(:[0-9]{1,5})?(/[^/]*)*$'
+          packages: ${{ inputs.script }}
+          script: ${{ inputs.script }}
+        run: |
+          # 下载配置数据
+          test -d "$(pwd)/.config" || mkdir -p "$(pwd)/.config"
+          [ -n "${packages}" ] && \
+          echo "DIY_PACKAGES=${packages}" > "$(pwd)/.config/diy_pkg.env"
+          [ -n "${script}" ] && \
+          echo "${script}" > "$(pwd)/.config/defaults.sh"
+          ls -lhS "$(pwd)/.config/" | awk '{print $9,$5}'
+
+      - name: Create Edit info
+        run: |
+          # 创建发布文档
+          echo "## 编译时间：\`${{ env.time }}\`" > info.md
+          echo "## [![Github](https://img.shields.io/badge/Release文件可在国内加速站下载-FC7C0D?logo=github&logoColor=fff&labelColor=000&style=for-the-badge)](https://ghproxy.net/)" >> info.md
+          echo "## 固件信息：" >> info.md
+          echo "* 固件版本 \`${{ inputs.version }}\`" >> info.md
+          echo "* 固件地址 \`${{ inputs.network_lan }}\`" >> info.md
+          echo "* 用户名 \`root\` 密码：无" >> info.md
+          echo "* 默认软件包大小 \`${{ inputs.rootfs_partsize }}MB\`" >> info.md
+          if [[ "${{ inputs.docker }}" == "true" ]]; then
+            echo "* 添加\`docker\`版本" >> info.md
+          fi
+ 
+      - name: Enable Cache
+        uses: actions/cache@main
+        with:
+          path: ${{ env.PATH_CACHE }}
+          key: ${{ env.CACHE_KEY }}
+        
+      - name: Set executable permissions
+        env: 
+          URL: "https://raw.githubusercontent.com/3wlh/Actions-ImageaBuilder/refs/heads/main/make/"
+        run: wget -q "${URL}/${{ env.arch }}/make.sh" -O "$(pwd)/make.sh" && chmod -R 755 "$(pwd)/make.sh"
+      
+      - name: Check Docker images
+        run: |
+          # 检查Docker镜像
+          mkdir -p ${{ env.PATH_CACHE }}/image
+          if [[ -f "${{ env.PATH_CACHE }}/image/${{ env.CACHE_IMAGE }}" ]]; then
+            echo -e "\e[1;32mImport Docker image：${{ env.CACHE_IMAGE }}\e[0m"
+            docker load --input \
+            ${{ env.PATH_CACHE }}/image/${{ env.CACHE_IMAGE }}
+          else
+            docker pull ${{ inputs.branch }}/imagebuilder:${{ env.IMAGE }}
+            echo -e "\e[1;32mExport the image to the cache directory\e[0m"
+            docker save --output \
+            ${{ env.PATH_CACHE }}/image/${{ env.CACHE_IMAGE }} \
+            ${{ inputs.branch }}/imagebuilder:${{ env.IMAGE }}
+          fi
+          chmod -R 777 "${{ env.PATH_CACHE }}"
+      
+      - name: Generate Env File
+        env:
+          profile: ${{ inputs.device }}
+        run: |
+          # 动态生成 .env 文件
+          cat > .env << EOF
+          PROFILES=${profile}
+          BRANCH=${{ inputs.branch }}
+          VERSION=${{ inputs.version }}
+          NETWORK_LAN=${{ inputs.network_lan }}
+          INCLUDE_DOCKER=${{ inputs.docker }}
+          ENABLE_PPPOE=${{ inputs.enable_pppoe }}
+          PPPOE_ACCOUNT=${{ inputs.pppoe_account }}
+          PPPOE_PASSWORD=${{ inputs.pppoe_password }}
+          ROOTFS_PARTSIZE=${{ inputs.rootfs_partsize }}
+          EOF
+        
+      - name: Building ${{ inputs.branch }} ${{ env.device }}
+        id: building
+        run: |
+          # 编译固件
+          docker run --rm -i \
+            --user root \
+            --env-file .env \
+            -v "${{ env.PATH_CACHE }}/dl:${{ env.builder }}/dl" \
+            -v "${{ env.PATH_CACHE }}/packages:${{ env.builder }}/packages" \
+            -v "${{ github.workspace }}/${{ inputs.image }}/bin:${{ env.builder }}/bin" \
+            -v "${{ github.workspace }}/.config:${{ env.builder }}/diy_config" \
+            -v "${{ github.workspace }}/make.sh:${{ env.builder }}/make.sh" \
+            ${{ inputs.branch }}/imagebuilder:${{ env.IMAGE }} /bin/bash ${{ env.builder }}/make.sh
+          cat "${{ github.workspace }}/${{ inputs.image }}/bin/.bashrc" 2>/dev/null >> $GITHUB_OUTPUT
+          #cat "${{ github.workspace }}/${{ inputs.image }}/bin/.bashrc" 2>/dev/null >> $GITHUB_ENV
+          # exit 1
+          
+      - name: Upload bin directory
+        uses: actions/upload-artifact@main
+        if: steps.building.outputs.building == 'success' && env.UPLOAD_BIN_DIR == 'true'
+        with:
+          name: GitHub-Actions_${{ env.device }}
+          path: ${{ env.PATH_CACHE }}/dl
+      
+      - name: Generate Firmware SHA-256
+        if: steps.building.outputs.building == 'success'
+        id: images
+        run: |
+          mkdir -p ${{ github.workspace }}/output && cd ${{ github.workspace }}/output
+          find ${{ github.workspace }}/${{ inputs.image }}/bin/targets/ -type f -name "*.img.gz" -exec cp {} ${{ github.workspace }}/output \;
+          cp ${{ github.workspace }}/${{ inputs.image }}/bin/*.conf ${{ github.workspace }}/output
+          cp ${{ github.workspace }}/${{ inputs.image }}/bin/*.config ${{ github.workspace }}/output
+          # cp ${{ github.workspace }}/${{ inputs.image }}/bin/targets/rockchip/armv8/*.img.gz ${{ github.workspace }}
+          for file in *.img.gz; do
+            sha256sum "$file" > "$file.sha256"
+            sha256sum -c "$file.sha256"
+          done
+          echo "status=success" >> $GITHUB_OUTPUT
+      
+      - name: Query Cleanup Cache
+        if: steps.building.outputs.cache == 'delete'
+        run: |
+          # List caches for current repository
+          gh cache list
+          # Delete a cache by key
+          if [[ "$(gh cache list)" =~ "${{ env.CACHE_KEY }}"  ]]; then
+            gh cache delete ${{ env.CACHE_KEY }}
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Reload again Cache
+        if: steps.building.outputs.cache == 'delete'
+        uses: actions/cache@main
+        with:
+          path: ${{ env.PATH_CACHE }}
+          key: ${{ env.CACHE_KEY }}
+          
+      - name: Upload to bin directory
+        if: steps.images.outputs.status == 'success'
+        uses: actions/upload-artifact@main
+        with:
+          name: GitHub-Actions_${{ inputs.branch }}-${{ inputs.version }}_${{ env.time }}
+          path: ${{ github.workspace }}/output/*.img.gz

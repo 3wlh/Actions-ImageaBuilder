@@ -1,0 +1,184 @@
+name: Issues
+on:
+  issues:
+    types: [opened, reopened]
+
+jobs:
+  parse-issue:
+    runs-on: ubuntu-latest
+    outputs:
+      iscustom: ${{ env.iscustom }}
+      branch: ${{ env.branch }}
+      device: ${{ env.device }}
+      version: ${{ env.version }}
+      rootfs_partsize: ${{ env.rootfs_partsize }}
+      network_lan: ${{ env.network_lan }}
+      docker: ${{ env.docker }}
+      enable_pppoe: ${{ env.enable_pppoe }}
+      pppoe_account: ${{ env.pppoe_account }}
+      pppoe_password: ${{ env.pppoe_password }}
+      packages: ${{ env.packages }}
+      script: ${{ env.script }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: Parse Issue Parameters
+        shell: python
+        run: |
+          import json
+          import os
+          import subprocess
+
+          def set_env(name, value):
+              subprocess.call(f'echo "{name}<<EOF" >> $GITHUB_ENV', shell=True)
+              subprocess.call(f'echo "{value}" >> $GITHUB_ENV', shell=True)
+              subprocess.call(f'echo "EOF" >> $GITHUB_ENV', shell=True)
+  
+          issuetitle = """${{ github.event.issue.title }}"""
+          issuebody = """${{ github.event.issue.body }}"""
+
+          iscustom = 'false'
+          warinfo = 'false'
+
+          fields = {
+            "branch": "openwrt",
+            "device": "",
+            "version": "",
+            "rootfs_partsize": "256",
+            "network_lan": "192.168.1.1",
+            "docker": "false",
+            "enable_pppoe": "false",
+            "pppoe_account": "",
+            "pppoe_password": "",
+            "packages": "",
+            "script": ""
+          }
+
+          try:
+            if issuetitle.strip().lower().startswith('build'):
+              jsonbody = json.loads(issuebody)
+              iscustom = 'true'
+              for k in fields:
+                fields[k] = jsonbody.get(k, fields[k])
+          except Exception:
+            pass
+
+          if iscustom == 'false':
+            if not any(x in issuebody for x in ['DMI', 'CPU', 'NIC']):
+              warinfo = 'true'
+
+          set_env("iscustom", iscustom)
+          set_env("warinfo", warinfo)
+          for k, v in fields.items():
+            set_env(k, v)
+
+      - name: Update Comment Warinfo
+        if: env.warinfo == 'true'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            请使用正确的格式提交构建请求。
+            
+            标题以 `build` 开头，内容为 JSON 格式，包含以下字段：
+            ```json
+            {
+              "branch": "openwrt 或 immortalwrt",
+              "device": "设备名称",
+              "version": "版本号",
+              "rootfs_partsize": "分区大小(MB)",
+              "network_lan": "LAN地址",
+              "docker": "true 或 false",
+              "enable_pppoe": "true 或 false",
+              "pppoe_account": "PPPoE账号",
+              "pppoe_password": "PPPoE密码",
+              "packages": "插件包列表(可选)",
+              "script": "自定义脚本(可选)"
+            }
+            ```
+          emoji: heart
+
+      - name: Update Comment Labels
+        if: env.iscustom == 'true'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'add-labels'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          labels: 'build,${{ env.device }}'
+
+      - name: Update Comment Building
+        if: env.iscustom == 'true'
+        id: comment
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'create-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Hi @${{ github.event.issue.user.login }}.  
+            Building ${{ env.branch }}-${{ env.device }}-${{ env.version }} ...  
+            > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
+            ----
+          emoji: heart
+
+  build:
+    needs: parse-issue
+    if: needs.parse-issue.outputs.iscustom == 'true'
+    uses: ./.github/workflows/Call_ImageBuilder_Issues.yml
+    with:
+      branch: ${{ needs.parse-issue.outputs.branch }}
+      device: ${{ needs.parse-issue.outputs.device }}
+      version: ${{ needs.parse-issue.outputs.version }}
+      rootfs_partsize: ${{ needs.parse-issue.outputs.rootfs_partsize }}
+      network_lan: ${{ needs.parse-issue.outputs.network_lan }}
+      docker: ${{ needs.parse-issue.outputs.docker == 'true' }}
+      enable_pppoe: ${{ needs.parse-issue.outputs.enable_pppoe == 'true' }}
+      pppoe_account: ${{ needs.parse-issue.outputs.pppoe_account }}
+      pppoe_password: ${{ needs.parse-issue.outputs.pppoe_password }}
+      packages: ${{ needs.parse-issue.outputs.packages }}
+      script: ${{ needs.parse-issue.outputs.script }}
+
+  update-comment:
+    needs: [parse-issue, build]
+    if: always() && needs.parse-issue.outputs.iscustom == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Comment Success
+        if: success()
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'create-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Hi @${{ github.event.issue.user.login }}.  
+            Build ${{ needs.parse-issue.outputs.branch }}-${{ needs.parse-issue.outputs.device }}-${{ needs.parse-issue.outputs.version }} success!  
+            Please check the artifacts: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
+            ----
+          emoji: hooray
+
+      - name: Update Comment Fail
+        if: failure()
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'create-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Hi @${{ github.event.issue.user.login }}.  
+            Build ${{ needs.parse-issue.outputs.branch }}-${{ needs.parse-issue.outputs.device }}-${{ needs.parse-issue.outputs.version }} failed, please try again.  
+            > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
+            ----
+          emoji: confused
+
+      - name: Close Issues
+        if: needs.parse-issue.outputs.iscustom == 'true'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'close-issue'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
