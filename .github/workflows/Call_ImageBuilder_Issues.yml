@@ -5,6 +5,8 @@ on:
     inputs:
       branch:
         type: string
+      image:
+        type: string
       device:
         type: string
       version:
@@ -58,29 +60,25 @@ jobs:
           echo "CACHE_KEY=${{ inputs.branch }}-${IMAGE}-$(echo "${IMAGE}" | md5sum | awk '{print $1}')" >> $GITHUB_ENV
 
       - name: Configure environment variables
-        env:
-          device: ${{ inputs.device }}
         run: |
           # 初始化数据变量
           sudo timedatectl set-timezone "Asia/Shanghai"
           echo "time=$(date "+%Y.%m.%d-%H%M%S")" >> $GITHUB_ENV
-          board=${device#*_}
-          [ -z "${board}" ] && board=${device}
-          echo "profile=${board}" >> $GITHUB_ENV
-          [[ "${device}" =~ "armv8"  ]] && echo "arch=armv8" >> $GITHUB_ENV
-          [[ "${device}" =~ "x86-64"  ]] && echo "arch=x86-64" >> $GITHUB_ENV
-          echo "device=$(echo ${device%_*} | sed 's/-openwrt//' | sed 's/-armv8//')" >> $GITHUB_ENV
+          [[ "${{ inputs.image }}" =~ "armv8"  ]] && echo "arch=armv8" >> $GITHUB_ENV
+          [[ "${{ inputs.image }}" =~ "x86_64"  ]] && echo "arch=x86-64" >> $GITHUB_ENV
       
       - name: Download Config Data
         env:
           regexper: '^(https?)://[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,}(:[0-9]{1,5})?(/[^/]*)*$'
-          packages: ${{ inputs.script }}
+          packages: ${{ inputs.packages }}
           script: ${{ inputs.script }}
         run: |
           # 下载配置数据
           test -d "$(pwd)/.config" || mkdir -p "$(pwd)/.config"
-          [ -n "${packages}" ] && \
-          echo "DIY_PACKAGES=${packages}" > "$(pwd)/.config/diy_pkg.env"
+          if [ -n "${packages}" ]; then
+            packages_clean=$(echo "${packages}" | sed 's/,/ /g' | tr -s ' ')
+            echo "DIY_PACKAGES=\"${packages_clean}\"" > "$(pwd)/.config/diy_pkg.env"
+          fi
           [ -n "${script}" ] && \
           echo "${script}" > "$(pwd)/.config/defaults.sh"
           cat "$(pwd)/.config/diy_pkg.env"
@@ -146,7 +144,7 @@ jobs:
           ROOTFS_PARTSIZE=${{ inputs.rootfs_partsize }}
           EOF
         
-      - name: Building ${{ inputs.branch }} ${{ env.device }}
+      - name: Building ${{ inputs.branch }} ${{ inputs.device }}
         id: building
         run: |
           # 编译固件
@@ -167,7 +165,7 @@ jobs:
         uses: actions/upload-artifact@main
         if: steps.building.outputs.building == 'success' && env.UPLOAD_BIN_DIR == 'true'
         with:
-          name: GitHub-Actions_${{ env.device }}
+          name: GitHub-Actions_${{ inputs.device }}
           path: ${{ env.PATH_CACHE }}/dl
       
       - name: Generate Firmware SHA-256
@@ -208,5 +206,5 @@ jobs:
         if: steps.images.outputs.status == 'success'
         uses: actions/upload-artifact@main
         with:
-          name: GitHub-Actions_${{ inputs.branch }}-${{ inputs.version }}_${{ env.time }}
+          name: ${{ inputs.branch }}-${{ inputs.device }}-${{ inputs.version }}_${{ env.time }}
           path: ${{ github.workspace }}/output/*.img.gz

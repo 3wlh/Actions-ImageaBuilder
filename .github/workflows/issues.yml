@@ -9,6 +9,7 @@ jobs:
     outputs:
       iscustom: ${{ steps.parse.outputs.iscustom }}
       branch: ${{ steps.parse.outputs.branch }}
+      image: ${{ steps.parse.outputs.image }}
       device: ${{ steps.parse.outputs.device }}
       version: ${{ steps.parse.outputs.version }}
       rootfs_partsize: ${{ steps.parse.outputs.rootfs_partsize }}
@@ -47,6 +48,7 @@ jobs:
 
           fields = {
             "branch": "openwrt",
+            "image": "",
             "device": "",
             "version": "",
             "rootfs_partsize": "256",
@@ -113,7 +115,8 @@ jobs:
             ```json
             {
               "branch": "openwrt 或 immortalwrt",
-              "device": "设备名称",
+              "image": "架构名称（如 x86_64）",
+              "device": "设备型号（如 generic）",
               "version": "版本号",
               "rootfs_partsize": "分区大小(MB)",
               "network_lan": "LAN地址",
@@ -134,7 +137,7 @@ jobs:
           actions: 'add-labels'
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
-          labels: 'build,${{ steps.parse.outputs.device }}'
+          labels: 'build,${{ steps.parse.outputs.image }}-${{ steps.parse.outputs.device }}'
 
       - name: Update Comment Building
         if: steps.parse.outputs.iscustom == 'true'
@@ -146,7 +149,7 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             Hi @${{ github.event.issue.user.login }}.  
-            Building ${{ steps.parse.outputs.branch }}-${{ steps.parse.outputs.device }}-${{ steps.parse.outputs.version }} ...  
+            Building ${{ steps.parse.outputs.branch }}-${{ steps.parse.outputs.image }}-${{ steps.parse.outputs.device }}-${{ steps.parse.outputs.version }} ...  
             > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
             ----
           emoji: heart
@@ -157,6 +160,7 @@ jobs:
     uses: ./.github/workflows/Call_ImageBuilder_Issues.yml
     with:
       branch: ${{ needs.parse-issue.outputs.branch }}
+      image: ${{ needs.parse-issue.outputs.image }}
       device: ${{ needs.parse-issue.outputs.device }}
       version: ${{ needs.parse-issue.outputs.version }}
       rootfs_partsize: ${{ needs.parse-issue.outputs.rootfs_partsize }}
@@ -182,7 +186,7 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             Hi @${{ github.event.issue.user.login }}.  
-            Build ${{ needs.parse-issue.outputs.branch }}-${{ needs.parse-issue.outputs.device }}-${{ needs.parse-issue.outputs.version }} success!  
+            Build ${{ needs.parse-issue.outputs.branch }}-${{ needs.parse-issue.outputs.image }}-${{ needs.parse-issue.outputs.device }}-${{ needs.parse-issue.outputs.version }} success!  
             Please check the artifacts: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
             ----
           emoji: hooray
@@ -196,7 +200,7 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             Hi @${{ github.event.issue.user.login }}.  
-            Build ${{ needs.parse-issue.outputs.branch }}-${{ needs.parse-issue.outputs.device }}-${{ needs.parse-issue.outputs.version }} failed, please try again.  
+            Build ${{ needs.parse-issue.outputs.branch }}-${{ needs.parse-issue.outputs.image }}-${{ needs.parse-issue.outputs.device }}-${{ needs.parse-issue.outputs.version }} failed, please try again.  
             > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
             ----
           emoji: confused
