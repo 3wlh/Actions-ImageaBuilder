@@ -81,8 +81,8 @@ jobs:
           fi
           [ -n "${script}" ] && \
           echo "${script}" > "$(pwd)/.config/defaults.sh"
-          cat "$(pwd)/.config/diy_pkg.env"
-          cat "$(pwd)/.config/defaults.sh"
+          cat "$(pwd)/.config/diy_pkg.env" 2>/dev/null
+          cat "$(pwd)/.config/defaults.sh" 2>/dev/null
           ls -lhS "$(pwd)/.config/" | awk '{print $9,$5}'
 
       - name: Create Edit info
