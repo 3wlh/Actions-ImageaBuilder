@@ -65,7 +65,7 @@ jobs:
           sudo timedatectl set-timezone "Asia/Shanghai"
           echo "time=$(date "+%Y.%m.%d-%H%M%S")" >> $GITHUB_ENV
           [[ "${{ inputs.image }}" =~ "armv8"  ]] && echo "arch=armv8" >> $GITHUB_ENV
-          [[ "${{ inputs.image }}" =~ "x86_64"  ]] && echo "arch=x86-64" >> $GITHUB_ENV
+          [[ "${{ inputs.image }}" =~ "x86"  ]] && echo "arch=x86-64" >> $GITHUB_ENV
       
       - name: Download Config Data
         env:
