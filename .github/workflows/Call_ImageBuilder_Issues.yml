@@ -92,8 +92,12 @@ jobs:
             cat "$(pwd)/.config/diy_pkg.env"
           fi
           [ -n "${script}" ] && \
-          echo "${script}" > "$(pwd)/.config/defaults.sh" && \
-          cat "$(pwd)/.config/defaults.sh"
+          if grep -qE "$regexper" <<< "${script}"; then
+            wget -q "${script}" -O "$(pwd)/.config/defaults.sh"
+          else
+            echo "${script}" > "$(pwd)/.config/defaults.sh"
+          fi
+          [ -f $(pwd)/.config/defaults.sh ] && cat "$(pwd)/.config/defaults.sh"
           ls -lhS "$(pwd)/.config/" | awk '{print $9,$5}'
 
       - name: Create Edit info
