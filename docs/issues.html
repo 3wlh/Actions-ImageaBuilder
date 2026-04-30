@@ -86,6 +86,10 @@
       transform: translateY(-1px);
       box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     }
+
+    .ml-2 {
+      margin-left: 0.5rem;
+    }
   </style>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script type="application/javascript">
@@ -115,11 +119,51 @@
       $("#branch").on("change", changeBranch);
       $("#enable_pppoe").on("change", togglePPPoE);
       $("#image_select").on("change", changeProfile);
+      $("#packages").on("input", createPackagesBtn);
 
+      loadFormData();
       setImageOptions();
       changeBranch();
       createPackagesBtn();
       togglePPPoE();
+    }
+
+    function saveFormData() {
+      var formData = {
+        branch: $("#branch").val(),
+        image: $("#image_select").val(),
+        device: $("#profile_select").val(),
+        version: $("#version").val(),
+        rootfs_partsize: $("#rootfs_partsize").val(),
+        network_lan: $("#network_lan").val(),
+        docker: $("#docker").val(),
+        enable_pppoe: $("#enable_pppoe").val(),
+        pppoe_account: $("#pppoe_account").val(),
+        pppoe_password: $("#pppoe_password").val(),
+        packages: $("#packages").val(),
+        script: $("#script").val()
+      };
+      localStorage.setItem('imagebuilder_form', JSON.stringify(formData));
+    }
+
+    function loadFormData() {
+      var saved = localStorage.getItem('imagebuilder_form');
+      if (saved) {
+        try {
+          var formData = JSON.parse(saved);
+          if (formData.branch) $("#branch").val(formData.branch);
+          if (formData.rootfs_partsize) $("#rootfs_partsize").val(formData.rootfs_partsize);
+          if (formData.network_lan) $("#network_lan").val(formData.network_lan);
+          if (formData.docker) $("#docker").val(formData.docker);
+          if (formData.enable_pppoe) $("#enable_pppoe").val(formData.enable_pppoe);
+          if (formData.pppoe_account) $("#pppoe_account").val(formData.pppoe_account);
+          if (formData.pppoe_password) $("#pppoe_password").val(formData.pppoe_password);
+          if (formData.packages) $("#packages").val(formData.packages);
+          if (formData.script) $("#script").val(formData.script);
+        } catch (e) {
+          console.error('Load form data error:', e);
+        }
+      }
     }
 
     function setImageOptions() {
@@ -132,10 +176,15 @@
         imageSelect.options.add(new Option(img, img));
       }
 
-      if (firstImage) {
+      var saved = localStorage.getItem('imagebuilder_form');
+      var savedImage = saved ? JSON.parse(saved).image : null;
+      
+      if (savedImage && image[savedImage]) {
+        imageSelect.value = savedImage;
+      } else if (firstImage) {
         imageSelect.value = firstImage;
-        changeProfile();
       }
+      changeProfile();
     }
 
     function changeProfile() {
@@ -148,10 +197,17 @@
         profiles.forEach(function (p, index) {
           profileSelect.options.add(new Option(p, p));
         });
-        if (profiles.length > 0) {
+        
+        var saved = localStorage.getItem('imagebuilder_form');
+        var savedDevice = saved ? JSON.parse(saved).device : null;
+        
+        if (savedDevice && profiles.includes(savedDevice)) {
+          profileSelect.value = savedDevice;
+        } else if (profiles.length > 0) {
           profileSelect.value = profiles[0];
         }
       }
+      saveFormData();
     }
 
     function changeBranch() {
@@ -163,6 +219,13 @@
       versionList.forEach(function (v) {
         versionSelect.options.add(new Option(v, v));
       });
+
+      var saved = localStorage.getItem('imagebuilder_form');
+      var savedVersion = saved ? JSON.parse(saved).version : null;
+      if (savedVersion && versionList.includes(savedVersion)) {
+        versionSelect.value = savedVersion;
+      }
+      saveFormData();
     }
 
     function togglePPPoE() {
@@ -174,10 +237,12 @@
         $("#pppoe_account_item").hide();
         $("#pppoe_password_item").hide();
       }
+      saveFormData();
     }
 
     function createPackagesBtn() {
-      var selectedPackages = $('#packages').val().split(",").map(s => s.trim()).filter(s => s);
+      var packagesVal = $('#packages').val() || '';
+      var selectedPackages = packagesVal.split(/[\s,]+/).map(s => s.trim()).filter(s => s);
       var html = `<div id="packages_btns">`;
       
       for (var pkg in packages) {
@@ -193,7 +258,8 @@
 
     function togglePackage(pkg) {
       var btnobj = $("#pkg_" + pkg);
-      var pkgstr = $('#packages').val().split(",").map(s => s.trim()).filter(s => s);
+      var packagesVal = $('#packages').val() || '';
+      var pkgstr = packagesVal.split(/[\s,]+/).map(s => s.trim()).filter(s => s);
 
       if (btnobj.hasClass("btn-danger")) {
         pkgstr = pkgstr.filter(p => p !== pkg);
@@ -203,7 +269,13 @@
         pkgstr.push(pkg);
       }
 
-      $('#packages').val(pkgstr.join(", "));
+      $('#packages').val(pkgstr.join(" "));
+      saveFormData();
+    }
+
+    function clearCache() {
+      localStorage.removeItem('imagebuilder_form');
+      location.reload();
     }
 
     function createIssues() {
@@ -214,8 +286,11 @@
       
       var selectedImage = $("#image_select").val();
       var selectedProfile = $("#profile_select").val();
-      if (selectedImage && selectedProfile) {
-        body["device"] = selectedImage + "_" + selectedProfile;
+      if (selectedImage) {
+        body["image"] = selectedImage;
+      }
+      if (selectedProfile) {
+        body["device"] = selectedProfile;
       }
       
       body["version"] = $("#version").val();
@@ -392,7 +467,7 @@
       </div>
       <div class="form-group-body">
         <textarea class="textarea-style input-contrast input-sm" type="text" id="packages"
-          name="inputs[packages]" style="height: 80px;" placeholder="选择或手动输入插件包名称，用空格分隔"></textarea>
+          name="inputs[packages]" style="height: 80px;" placeholder="选择或手动输入插件包名称，用空格或逗号分隔"></textarea>
         <div id="packages_container"></div>
       </div>
     </div>
@@ -409,6 +484,7 @@
 
     <div class="form-group mt-3 mb-2">
       <button type="button" class="btn btn-primary" onclick="createIssues()">Create Issue</button>
+      <button type="button" class="btn btn-danger ml-2" onclick="clearCache()">Clear Cache</button>
     </div>
 
     <div class="form-group mt-3 mb-2">
@@ -432,8 +508,9 @@
         </ul>
         <p><strong>设备格式：</strong></p>
         <ul>
-          <li>最终 device 参数格式：<code>{image}_{profile}</code></li>
-          <li>示例：<code>x86_64_generic</code>, <code>rockchip-armv8_friendlyarm_nanopi-r6s</code></li>
+          <li>image 参数：架构名称（如 x86_64, rockchip-armv8）</li>
+          <li>device 参数：设备型号（如 generic, friendlyarm_nanopi-r6s）</li>
+          <li>示例：image="x86_64", device="generic"</li>
         </ul>
       </div>
     </div>
