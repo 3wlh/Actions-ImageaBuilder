@@ -7,43 +7,40 @@ jobs:
   parse-issue:
     runs-on: ubuntu-latest
     outputs:
-      iscustom: ${{ env.iscustom }}
-      branch: ${{ env.branch }}
-      device: ${{ env.device }}
-      version: ${{ env.version }}
-      rootfs_partsize: ${{ env.rootfs_partsize }}
-      network_lan: ${{ env.network_lan }}
-      docker: ${{ env.docker }}
-      enable_pppoe: ${{ env.enable_pppoe }}
-      pppoe_account: ${{ env.pppoe_account }}
-      pppoe_password: ${{ env.pppoe_password }}
-      packages: ${{ env.packages }}
-      script: ${{ env.script }}
+      iscustom: ${{ steps.parse.outputs.iscustom }}
+      branch: ${{ steps.parse.outputs.branch }}
+      device: ${{ steps.parse.outputs.device }}
+      version: ${{ steps.parse.outputs.version }}
+      rootfs_partsize: ${{ steps.parse.outputs.rootfs_partsize }}
+      network_lan: ${{ steps.parse.outputs.network_lan }}
+      docker: ${{ steps.parse.outputs.docker }}
+      enable_pppoe: ${{ steps.parse.outputs.enable_pppoe }}
+      pppoe_account: ${{ steps.parse.outputs.pppoe_account }}
+      pppoe_password: ${{ steps.parse.outputs.pppoe_password }}
+      packages: ${{ steps.parse.outputs.packages }}
+      script: ${{ steps.parse.outputs.script }}
     steps:
       - name: Checkout
         uses: actions/checkout@main
 
       - name: Parse Issue Parameters
+        id: parse
         shell: python
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
         run: |
           import json
           import os
-          import subprocess
-          import re
 
-          def set_env(name, value):
-              subprocess.call(f'echo "{name}<<EOF" >> $GITHUB_ENV', shell=True)
-              subprocess.call(f'echo "{value}" >> $GITHUB_ENV', shell=True)
-              subprocess.call(f'echo "EOF" >> $GITHUB_ENV', shell=True)
-  
-          issuetitle = """${{ github.event.issue.title }}"""
-          issuebody = """${{ github.event.issue.body }}"""
+          issuetitle = os.environ.get('ISSUE_TITLE', '')
+          issuebody = os.environ.get('ISSUE_BODY', '')
 
-          print(f"=== DEBUG INFO ===")
+          print("=== DEBUG INFO ===")
           print(f"Title: {issuetitle}")
           print(f"Body length: {len(issuebody)}")
-          print(f"Body preview: {issuebody[:200]}")
-          print(f"==================")
+          print(f"Body preview: {issuebody[:500]}")
+          print("==================")
 
           iscustom = 'false'
           warinfo = 'false'
@@ -66,7 +63,6 @@ jobs:
             if issuetitle.strip().lower().startswith('build'):
               json_str = issuebody.strip()
               
-              # 移除可能的 Markdown 代码块标记
               if '```' in json_str:
                 lines = json_str.split('\n')
                 json_lines = []
@@ -75,15 +71,15 @@ jobs:
                   if line.strip().startswith('```'):
                     in_code_block = not in_code_block
                     continue
-                  if in_code_block or not line.strip().startswith('```'):
+                  if in_code_block:
                     json_lines.append(line)
                 json_str = '\n'.join(json_lines).strip()
               
-              print(f"Extracted JSON: {json_str[:200]}")
+              print(f"Extracted JSON: {json_str[:500]}")
               jsonbody = json.loads(json_str)
               iscustom = 'true'
               for k in fields:
-                fields[k] = jsonbody.get(k, fields[k])
+                fields[k] = str(jsonbody.get(k, fields[k]))
               print(f"Parsed fields: {fields}")
           except Exception as e:
             print(f"Parse error: {e}")
@@ -94,13 +90,14 @@ jobs:
             if not any(x in issuebody for x in ['DMI', 'CPU', 'NIC']):
               warinfo = 'true'
 
-          set_env("iscustom", iscustom)
-          set_env("warinfo", warinfo)
-          for k, v in fields.items():
-            set_env(k, v)
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+            f.write(f"iscustom={iscustom}\n")
+            f.write(f"warinfo={warinfo}\n")
+            for k, v in fields.items():
+              f.write(f"{k}={v}\n")
 
       - name: Update Comment Warinfo
-        if: env.warinfo == 'true'
+        if: steps.parse.outputs.warinfo == 'true'
         uses: actions-cool/issues-helper@v3
         with:
           actions: "create-comment"
@@ -128,16 +125,16 @@ jobs:
           emoji: heart
 
       - name: Update Comment Labels
-        if: env.iscustom == 'true'
+        if: steps.parse.outputs.iscustom == 'true'
         uses: actions-cool/issues-helper@v3
         with:
           actions: 'add-labels'
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
-          labels: 'build,${{ env.device }}'
+          labels: 'build,${{ steps.parse.outputs.device }}'
 
       - name: Update Comment Building
-        if: env.iscustom == 'true'
+        if: steps.parse.outputs.iscustom == 'true'
         id: comment
         uses: actions-cool/issues-helper@v3
         with:
@@ -146,7 +143,7 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             Hi @${{ github.event.issue.user.login }}.  
-            Building ${{ env.branch }}-${{ env.device }}-${{ env.version }} ...  
+            Building ${{ steps.parse.outputs.branch }}-${{ steps.parse.outputs.device }}-${{ steps.parse.outputs.version }} ...  
             > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
             ----
           emoji: heart
