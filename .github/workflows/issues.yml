@@ -29,6 +29,7 @@ jobs:
           import json
           import os
           import subprocess
+          import re
 
           def set_env(name, value):
               subprocess.call(f'echo "{name}<<EOF" >> $GITHUB_ENV', shell=True)
@@ -37,6 +38,12 @@ jobs:
   
           issuetitle = """${{ github.event.issue.title }}"""
           issuebody = """${{ github.event.issue.body }}"""
+
+          print(f"=== DEBUG INFO ===")
+          print(f"Title: {issuetitle}")
+          print(f"Body length: {len(issuebody)}")
+          print(f"Body preview: {issuebody[:200]}")
+          print(f"==================")
 
           iscustom = 'false'
           warinfo = 'false'
@@ -57,12 +64,31 @@ jobs:
 
           try:
             if issuetitle.strip().lower().startswith('build'):
-              jsonbody = json.loads(issuebody)
+              json_str = issuebody.strip()
+              
+              # 移除可能的 Markdown 代码块标记
+              if '```' in json_str:
+                lines = json_str.split('\n')
+                json_lines = []
+                in_code_block = False
+                for line in lines:
+                  if line.strip().startswith('```'):
+                    in_code_block = not in_code_block
+                    continue
+                  if in_code_block or not line.strip().startswith('```'):
+                    json_lines.append(line)
+                json_str = '\n'.join(json_lines).strip()
+              
+              print(f"Extracted JSON: {json_str[:200]}")
+              jsonbody = json.loads(json_str)
               iscustom = 'true'
               for k in fields:
                 fields[k] = jsonbody.get(k, fields[k])
-          except Exception:
-            pass
+              print(f"Parsed fields: {fields}")
+          except Exception as e:
+            print(f"Parse error: {e}")
+            import traceback
+            traceback.print_exc()
 
           if iscustom == 'false':
             if not any(x in issuebody for x in ['DMI', 'CPU', 'NIC']):
