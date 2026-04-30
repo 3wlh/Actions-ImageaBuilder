@@ -86,11 +86,7 @@
       transform: translateY(-1px);
       box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     }
-
-    .ml-2 {
-      margin-left: 0.5rem;
-    }
-  </style>
+    </style>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script type="application/javascript">
     var repo = "3wlh/Actions-ImageaBuilder";
@@ -271,11 +267,6 @@
 
       $('#packages').val(pkgstr.join(" "));
       saveFormData();
-    }
-
-    function clearCache() {
-      localStorage.removeItem('imagebuilder_form');
-      location.reload();
     }
 
     function createIssues() {
@@ -484,7 +475,6 @@
 
     <div class="form-group mt-3 mb-2">
       <button type="button" class="btn btn-primary" onclick="createIssues()">Create Issue</button>
-      <button type="button" class="btn btn-danger ml-2" onclick="clearCache()">Clear Cache</button>
     </div>
 
     <div class="form-group mt-3 mb-2">
@@ -503,8 +493,8 @@
         <p><strong>数据来源：</strong></p>
         <ul>
           <li>设备列表：<code>js/device.js</code> (image 对象)</li>
+          <li>版本列表：<code>js/version.js</code> (versions 对象)</li>
           <li>插件包列表：<code>js/packages.js</code></li>
-          <li>版本列表：<code>js/packages.js</code> (versions 对象)</li>
         </ul>
         <p><strong>设备格式：</strong></p>
         <ul>
@@ -518,6 +508,7 @@
   </div>
 
   <script src="./js/device.js"></script>
+  <script src="./js/version.js"></script>
   <script src="./js/packages.js"></script>
 </body>
 
