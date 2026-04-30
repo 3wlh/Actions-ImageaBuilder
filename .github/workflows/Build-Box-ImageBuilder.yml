@@ -104,14 +104,14 @@ on:
       docker:
         description: |
           是否编译 Docker 插件
-        required: true
+        required: false
         default: false
         type: boolean
         
       service:
         description: "编译成网络服务固件"
         required: false
-        default: true
+        default: false
         type: boolean
       
 env:
