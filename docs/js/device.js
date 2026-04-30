@@ -1,5 +1,5 @@
 var image = {
-    "x86_64": [
+    "x86-64": [
         "generic"
     ],
     "rockchip-armv8": [
