@@ -77,12 +77,12 @@ jobs:
           test -d "$(pwd)/.config" || mkdir -p "$(pwd)/.config"
           if [ -n "${packages}" ]; then
             packages_clean=$(echo "${packages}" | sed 's/,/ /g' | tr -s ' ')
-            echo "DIY_PACKAGES=\"${packages_clean}\"" > "$(pwd)/.config/diy_pkg.env"
-            cat "$(pwd)/.config/diy_pkg.env" 2>/dev/null
+            echo "DIY_PACKAGES=\"${packages_clean}\"" > "$(pwd)/.config/diy_pkg.env" && \
+            cat "$(pwd)/.config/diy_pkg.env"
           fi
           [ -n "${script}" ] && \
           echo "${script}" > "$(pwd)/.config/defaults.sh" && \
-          cat "$(pwd)/.config/diy_pkg.env" 2>/dev/null
+          cat "$(pwd)/.config/defaults.sh"
           ls -lhS "$(pwd)/.config/" | awk '{print $9,$5}'
 
       - name: Create Edit info
