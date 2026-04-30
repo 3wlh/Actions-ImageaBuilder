@@ -66,8 +66,17 @@ jobs:
           # 初始化数据变量
           sudo timedatectl set-timezone "Asia/Shanghai"
           echo "time=$(date "+%Y.%m.%d-%H%M%S")" >> $GITHUB_ENV
-          [[ "${image}" =~ "armv8"  ]] && echo "arch=armv8" >> $GITHUB_ENV
-          [[ "${image}" =~ "x86"  ]] && echo "arch=x86-64" >> $GITHUB_ENV
+          case "${image}" in
+            *armv8*)
+              echo "arch=armv8" >> $GITHUB_ENV
+              ;;
+            *x86*|*x64*)
+              echo "arch=x86-64" >> $GITHUB_ENV
+              ;;
+            *)
+              echo "::warning::Unknown architecture in image: ${image}"
+              ;;
+          esac
           
       - name: Download Config Data
         env:
