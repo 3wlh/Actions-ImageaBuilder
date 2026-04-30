@@ -60,13 +60,15 @@ jobs:
           echo "CACHE_KEY=${{ inputs.branch }}-${IMAGE}-$(echo "${IMAGE}" | md5sum | awk '{print $1}')" >> $GITHUB_ENV
 
       - name: Configure environment variables
+        env:
+          image: ${{ inputs.image }}
         run: |
           # 初始化数据变量
           sudo timedatectl set-timezone "Asia/Shanghai"
           echo "time=$(date "+%Y.%m.%d-%H%M%S")" >> $GITHUB_ENV
-          [[ "${{ inputs.image }}" =~ "armv8"  ]] && echo "arch=armv8" >> $GITHUB_ENV
-          [[ "${{ inputs.image }}" =~ "x86"  ]] && echo "arch=x86-64" >> $GITHUB_ENV
-      
+          [[ "${image}" =~ "armv8"  ]] && echo "arch=armv8" >> $GITHUB_ENV
+          [[ "${image}" =~ "x86"  ]] && echo "arch=x86-64" >> $GITHUB_ENV
+          
       - name: Download Config Data
         env:
           regexper: '^(https?)://[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,}(:[0-9]{1,5})?(/[^/]*)*$'
