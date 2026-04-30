@@ -219,3 +219,4 @@ jobs:
         with:
           name: ${{ inputs.branch }}-${{ inputs.device }}-${{ inputs.version }}_${{ env.time }}
           path: ${{ github.workspace }}/output/*.img.gz
+          compression-level: 0
