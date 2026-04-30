@@ -94,7 +94,10 @@ jobs:
             f.write(f"iscustom={iscustom}\n")
             f.write(f"warinfo={warinfo}\n")
             for k, v in fields.items():
-              f.write(f"{k}={v}\n")
+              if '\n' in v:
+                f.write(f"{k}<<EOF\n{v}\nEOF\n")
+              else:
+                f.write(f"{k}={v}\n")
 
       - name: Update Comment Warinfo
         if: steps.parse.outputs.warinfo == 'true'
