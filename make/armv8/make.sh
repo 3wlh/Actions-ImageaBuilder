@@ -15,6 +15,7 @@ sed -i '1a src/gz 3wlh https://packages.11121314.xyz/packages/aarch64_generic' "
 echo "=========================== 查看自定义插件 ==========================="
 ls -lhS "$(pwd)/packages/diy_packages/" | awk '{print $9,$5}'
 echo "============================= 初始化自定义配置 ============================="
+[ -n "${PROFILES}" ] && PROFILE="${PROFILE}"
 [[ -z "${PROFILE}" ]] && { echo "获取编译设备配置失败！";exit 1; }
 export Model="${Model}"
 [[ -d "$(pwd)/files/etc/opkg/keys" ]] || mkdir -p "$(pwd)/files/etc/opkg/keys"
