@@ -241,7 +241,7 @@
         body["script"] = script_content;
       }
 
-      body = JSON.stringify(body, null, 2);
+      body = JSON.stringify(body);
       window.location.href = `https://github.com/${repo}/issues/new?title=${title}&body=${encodeURIComponent(body)}`;
     }
   </script>
