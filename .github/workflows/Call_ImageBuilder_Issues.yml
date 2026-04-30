@@ -83,6 +83,8 @@ jobs:
           echo "DIY_PACKAGES=${packages}" > "$(pwd)/.config/diy_pkg.env"
           [ -n "${script}" ] && \
           echo "${script}" > "$(pwd)/.config/defaults.sh"
+          cat "$(pwd)/.config/diy_pkg.env"
+          cat "$(pwd)/.config/defaults.sh"
           ls -lhS "$(pwd)/.config/" | awk '{print $9,$5}'
 
       - name: Create Edit info
