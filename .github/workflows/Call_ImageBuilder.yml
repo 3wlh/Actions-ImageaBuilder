@@ -82,18 +82,18 @@ jobs:
           cp -f "diy_script/${name}.sh" "$(pwd)/.config/defaults.sh"
           ls -lhS "$(pwd)/.config/" | awk '{print $9,$5}'
 
-      - name: Create Edit info
+      - name: Create Edit Body
         run: |
           # 创建发布文档
-          echo "## 编译时间：\`${{ env.time }}\`" > info.md
-          echo "## [![Github](https://img.shields.io/badge/Release文件可在国内加速站下载-FC7C0D?logo=github&logoColor=fff&labelColor=000&style=for-the-badge)](https://ghproxy.net/)" >> info.md
-          echo "## 固件信息：" >> info.md
-          echo "* 固件版本 \`${{ inputs.version }}\`" >> info.md
-          echo "* 固件地址 \`${{ inputs.network_lan }}\`" >> info.md
-          echo "* 用户名 \`root\` 密码：无" >> info.md
-          echo "* 默认软件包大小 \`${{ inputs.rootfs_partsize }}MB\`" >> info.md
+          echo "## 编译时间：\`${{ env.time }}\`" > Body.md
+          echo "## [![Github](https://img.shields.io/badge/Release文件可在国内加速站下载-FC7C0D?logo=github&logoColor=fff&labelColor=000&style=for-the-badge)](https://ghproxy.net/)" >> Body.md
+          echo "## 固件信息：" >> Body.md
+          echo "* 固件版本 \`${{ inputs.version }}\`" >> Body.md
+          echo "* 固件地址 \`${{ inputs.network_lan }}\`" >> Body.md
+          echo "* 用户名 \`root\` 密码：无" >> Body.md
+          echo "* 默认软件包大小 \`${{ inputs.rootfs_partsize }}MB\`" >> Body.md
           if [[ "${{ inputs.docker }}" == "true" ]]; then
-            echo "* 添加\`docker\`版本" >> info.md
+            echo "* 添加\`docker\`版本" >> Body.md
           fi
  
       - name: Enable Cache
@@ -217,4 +217,4 @@ jobs:
           replacesArtifacts: true
           makeLatest: true
           token: ${{ secrets.GITHUB_TOKEN }}
-          bodyFile: info.md
+          bodyFile: Body.md
